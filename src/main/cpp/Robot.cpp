@@ -14,6 +14,7 @@ using namespace std;
 #include <frc/XboxController.h>
 #include <ctre/phoenix/motorcontrol/can/VictorSPX.h>
 #include <ctre/phoenix/motorcontrol/can/TalonSRX.h>
+#include <frc/Encoder.h>
 
 
 
@@ -26,6 +27,7 @@ class Robot : public frc::TimedRobot {
   ctre::phoenix::motorcontrol::can::TalonSRX  a_lowMotor{ARM_CAN_LOW_NUM};
   ctre::phoenix::motorcontrol::can::TalonSRX  a_highMotor{ARM_CAN_HIGH_NUM};
   ctre::phoenix::motorcontrol::can::VictorSPX m_rightMotor2{16};
+  frc::Encoder armEncoder{0, 1};
   // JoyStick
   frc::Joystick m_stick{0};
   // Xbox Controller
