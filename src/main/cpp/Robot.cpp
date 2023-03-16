@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "mapping.h"
+#include "autoBalance.h"
 using namespace std;
 #include <frc/Joystick.h>
 #include <frc/TimedRobot.h>
