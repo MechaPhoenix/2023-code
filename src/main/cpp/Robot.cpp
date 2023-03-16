@@ -90,7 +90,7 @@ class Robot : public frc::TimedRobot {
   double leftPower = (y - x) / 2;
   double rightPower = (y + x) / 2;
 
-     \
+     
   // Update the LEFT drive
   if (leftPower != lastDriveLeft) {
     // Update the LEFT drive
