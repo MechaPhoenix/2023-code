@@ -149,7 +149,7 @@ if (c_stick_rb_press) {
 // Code Above checks if Trigger is pressed and fires thr Solenoid from the Pneumatic Pistons
 
 
-
+// Not Needed
 //bool lastShooterState;
 //bool lastFeederState;
 
