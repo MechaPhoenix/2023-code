@@ -1,0 +1,7 @@
+#define FEED_BUTTON 1
+#define S_LEFT_DRIVE 1
+#define S_RIGHT_DRIVE 1
+#define ARM_MOTOR_BTN 1 
+#define ARM_CAN_LOW_NUM 10
+#define ARM_CAN_HIGH_NUM 11
+#define ARM_LOW_DRIVE 1
