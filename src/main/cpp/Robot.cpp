@@ -111,7 +111,8 @@ class Robot : public frc::TimedRobot {
   // Arm Lower Motor Xbox Controller Handler
   bool lastBumper;
   double lastBumperRB;
-  bool c_stick_rb_press = ControllerX.GetRightBumper();
+  bool c_stick_rb_press = m_stick.GetRawButtonPressed(11);
+ // bool c_stick_rb_press = ControllerX.GetRightBumper();
    if (c_stick_rb_press != lastBumper) {
    lastBumper = c_stick_rb_press;
 if (c_stick_rb_press) {
