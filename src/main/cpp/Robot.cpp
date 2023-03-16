@@ -45,6 +45,7 @@ class Robot : public frc::TimedRobot {
 
  public:
   void RobotInit() override {
+    // logs
       std::cout << "Robot Started." << "\n";
       sleep(5);
       std::cout << "Ready to Move!" << "\n";
