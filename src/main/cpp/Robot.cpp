@@ -70,13 +70,13 @@ class Robot : public frc::TimedRobot {
       // pcmCompressor.Disable();
 
       // Prints
-      std::cout << "Compressor Enabled";
-      std::cout << "Check if Running";
-      std::cout << "RLS On and Flashing";
+      std::cout << "Compressor Enabled" << "\n";
+      std::cout << "Check if Running" << "\n";
+      std::cout << "RLS On and Flashing" << "\n";
 
     //Solenoid
     gripperSolenoid.Set(frc::DoubleSolenoid::Value::kOff);
-    std::cout << "Solenoid Off";
+    std::cout << "Solenoid Off" << "\n";
   
   }
 
