@@ -134,6 +134,12 @@ public:
       lastDriveRight = rightPower;
     }
     // Arm Lower Motor Xbox Controller Handler
+    bool lastHit;
+    double lastHitS;
+    bool s_hit = ControllerX.GetLeftBumper();
+
+    if (s_hit != lastHitS)
+
     bool lastBumper;
     double lastBumperRB;
     bool c_stick_rb_press = m_stick.GetRawButtonPressed(11);
