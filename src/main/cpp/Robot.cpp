@@ -16,9 +16,43 @@ using namespace std;
 #include <ctre/phoenix/motorcontrol/can/VictorSPX.h>
 #include <ctre/phoenix/motorcontrol/can/TalonSRX.h>
 #include <frc/Encoder.h>
+#include <cameraserver/CameraServer.h>
+#include <cstdio>
+#include <thread>
+#include <opencv2/core/core.hpp>
+#include <opencv2/core/types.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 class Robot : public frc::TimedRobot
 {
+  private:
+    static void VisionThread() {
+      cs::UsbCamera camera = frc::CameraServer::StartAutomaticCapture();
+
+      camera.SetResolution(640, 480);
+
+      cs::CvSink cvSink = frc::CameraServer::GetVideo();
+
+      cs::CvSource outputStream =
+        frc::CameraServer::PutVideo("Rectangle", 640, 480);
+
+        cv::Mat mat;
+
+        while (true) {
+
+          if (cvSink.GrabFrame(mat) == 0) {
+
+            outputStream.NotifyError(cvSink.GetError());
+
+            continue;
+
+          }
+
+          rectangle(mat, cv::Point(100, 100), cv::Point(400, 400),
+            cv::Scalar(255, 255, 255), 5);
+          outputStream.PutFrame(mat);
+        }
+    }
   // Motors
   ctre::phoenix::motorcontrol::can::VictorSPX m_leftMotor{15};
   ctre::phoenix::motorcontrol::can::VictorSPX m_rightMotor{14};
@@ -51,6 +85,10 @@ public:
   }
   void RobotInit() override
   {
+
+    std::thread visionThread(VisionThread);
+    visionThread.detach();
+
     // logs
     std::cout << "Robot Started."
               << "\n";
