@@ -142,6 +142,7 @@ public:
   void AutonomousInit() override
   {
     std::cout << "Entering autonomous mode" << std::endl;
+    std::cout << "Ready to Go" << std::endl;
   }
 
   void AutonomousPeriodic() override
