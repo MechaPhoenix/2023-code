@@ -152,6 +152,21 @@ public:
       }
     }
 
+    bool lastright;
+    double lastBumperR;
+    bool b_press = m_stick.GetRawButtonPressed(ARM_HIGH_TEST_BTN);
+
+    if (b_press != lastBumper)
+    {
+      lastBumperR = b_press;
+      if (b_press)
+      {
+        a_highMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, lastright * ARM_HIGH_DRIVE);
+      } else {
+        std::cout << "High Bumper Test off" << std::endl;
+      }
+    }
+
     // Update the Trigger and stuff
     bool trigger = m_stick.GetTrigger();
     bool thumbButton = m_stick.GetRawButton(FEED_BUTTON);
