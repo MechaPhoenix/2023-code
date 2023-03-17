@@ -115,6 +115,8 @@ public:
     // Note if Wheels Invert
     // Flip the y - x and the y + x around
 
+    // drive
+
     double leftPower = (y - x) / 2;
     double rightPower = (y + x) / 2;
 
@@ -134,6 +136,7 @@ public:
       lastDriveRight = rightPower;
     }
     // Arm Lower Motor Xbox Controller Handler
+      // do not remove these. these are for testing.
     bool lastHit;
     double lastHitS;
     bool s_hit = ControllerX.GetLeftBumper();
@@ -152,7 +155,7 @@ public:
         gripperSolenoid.Set(frc::DoubleSolenoid::Value::kReverse);
       }
     }
-
+    // do not remove these. these are for testing.
     bool last5;
     double last5test;
     bool joyup = m_stick.GetRawButtonPressed(ARM_MOTOR_JOY_UP_TEST);
@@ -167,7 +170,7 @@ public:
         std::cout << "No hit" << std::endl;
       }
     }
-
+    // do not remove these. these are for testing.
     bool last4;
     double last4test;
     bool joydown = m_stick.GetRawButtonPressed(ARM_MOTOR_JOY_DOWN_TEST);
@@ -182,7 +185,7 @@ public:
         std::cout << "No Hit 2" << std::endl;
       }
     }
-
+    // do not remove these. these are for testing.
     bool last3;
     double last3test;
     bool joyup2 = m_stick.GetRawButtonPressed(ARM_MOTOR_JOY_UP2_TEST);
@@ -197,7 +200,7 @@ public:
         std::cout << "No Hit 3" << std::endl;
       }
     }
-
+  // do not remove these. these are for testing.
     bool last2;
     double last2test;
     bool joydown2 = m_stick.GetRawButtonPressed(ARM_MOTOR_JOY_DOWN2_TEST);
@@ -212,6 +215,8 @@ public:
         std::cout << "No Hit 2" << std::endl;
       }
     }
+
+      // do not remove these. these are for testing.
 
     bool lastBumper;
     double lastBumperRB;
@@ -230,6 +235,8 @@ public:
                   << "\n";
       }
     }
+
+      // do not remove these. these are for testing.
 
     bool lastright;
     double lastBumperR;
