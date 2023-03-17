@@ -139,6 +139,79 @@ public:
     bool s_hit = ControllerX.GetLeftBumper();
 
     if (s_hit != lastHitS)
+    {
+      lastHitS = s_hit;
+      if (s_hit)
+      {
+        gripperSolenoid.Toggle();
+        gripperSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
+        std::cout << "Solenoid Out" << std::endl;
+      } else {
+        gripperSolenoid.Toggle();
+        sleep(1);
+        gripperSolenoid.Set(frc::DoubleSolenoid::Value::kReverse);
+      }
+    }
+
+    bool last5;
+    double last5test;
+    bool joyup = m_stick.GetRawButtonPressed(ARM_MOTOR_JOY_UP_TEST);
+
+    if (joyup != last5test)
+    {
+      last5test = joyup;
+      if (joyup)
+      {
+        a_lowMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, last5 * ARM_LOW_DRIVE);
+      } else {
+        std::cout << "No hit" << std::endl;
+      }
+    }
+
+    bool last4;
+    double last4test;
+    bool joydown = m_stick.GetRawButtonPressed(ARM_MOTOR_JOY_DOWN_TEST);
+
+    if (joydown != -last4test)
+    {
+      last4test = joydown;
+      if (joydown)
+      {
+        a_lowMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, last4 * ARM_LOW_DRIVE);
+      } else {
+        std::cout << "No Hit 2" << std::endl;
+      }
+    }
+
+    bool last3;
+    double last3test;
+    bool joyup2 = m_stick.GetRawButtonPressed(ARM_MOTOR_JOY_UP2_TEST);
+
+    if (joyup2 != last3test);
+    {
+      last3test = joyup2;
+      if (joyup2)
+      {
+        a_highMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, last3 * ARM_HIGH_DRIVE);
+      } else {
+        std::cout << "No Hit 3" << std::endl;
+      }
+    }
+
+    bool last2;
+    double last2test;
+    bool joydown2 = m_stick.GetRawButtonPressed(ARM_MOTOR_JOY_DOWN2_TEST);
+
+    if (joydown2 != -last2test);
+    {
+      last2test =joydown2;
+      if (joydown2)
+      {
+        a_highMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, last2 * ARM_HIGH_DRIVE);
+      } else {
+        std::cout << "No Hit 2" << std::endl;
+      }
+    }
 
     bool lastBumper;
     double lastBumperRB;
