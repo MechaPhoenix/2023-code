@@ -67,14 +67,10 @@ public:
     // gearbox is constructed, you might have to invert the left side instead.
     // m_rightMotor.SetInverted(true);
     // m_rightMotor2.SetInverted(true);
+  
     // Set some follow stuff
     m_rightMotor2.Follow(m_rightMotor);
     m_leftMotor2.Follow(m_leftMotor);
-
-    m_rightMotor.SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
-    m_rightMotor2.SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
-    m_leftMotor.SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
-    m_leftMotor2.SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
 
     pcmCompressor.EnableDigital();
     // Disable Compressor
@@ -102,7 +98,7 @@ public:
 
   void AutonomousPeriodic() override
   {
-    double speed = mAutoBalance.autoBalanceRoutine();
+    double speed = mAutoBalance.scoreAndBalance();
     setDrive(speed, speed);
   }
 
