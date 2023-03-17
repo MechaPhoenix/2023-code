@@ -71,6 +71,11 @@ public:
     m_rightMotor2.Follow(m_rightMotor);
     m_leftMotor2.Follow(m_leftMotor);
 
+    m_rightMotor.SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
+    m_rightMotor2.SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
+    m_leftMotor.SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
+    m_leftMotor2.SetNeutralMode(ctre::phoenix::motorcontrol::Brake);
+
     pcmCompressor.EnableDigital();
     // Disable Compressor
     // Optional
@@ -97,7 +102,7 @@ public:
 
   void AutonomousPeriodic() override
   {
-    double speed = mAutoBalance.scoreAndBalance();
+    double speed = mAutoBalance.autoBalanceRoutine();
     setDrive(speed, speed);
   }
 

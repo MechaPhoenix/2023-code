@@ -6,3 +6,4 @@
 #define ARM_CAN_HIGH_NUM 11
 #define ARM_LOW_DRIVE 1
 #define ARM_LOW_TEST_BTN 11
+#define AUTO_ENABLE_NUM 12

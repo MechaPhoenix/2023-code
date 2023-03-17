@@ -2,6 +2,7 @@
 // https://github.com/FRC3683/OpenAutoBalance
 
 #include "autoBalance.h"
+#include <frc/DataLogManager.h>
 
 autoBalance::autoBalance(){
     state = 0;
@@ -11,22 +12,22 @@ autoBalance::autoBalance(){
      * CONFIG *
      **********/
     //Speed the robot drived while scoring/approaching station, default = 0.4
-    robotSpeedFast = 0.4;
+    robotSpeedFast = 0.3;
     
     //Speed the robot drives while balancing itself on the charge station.
     //Should be roughly half the fast speed, to make the robot more accurate, default = 0.2
-    robotSpeedSlow = 0.2;
+    robotSpeedSlow = 0.1;
 
     //Angle where the robot knows it is on the charge station, default = 13.0
     onChargeStationDegree = 13.0;
 
     //Angle where the robot can assume it is level on the charging station
     //Used for exiting the drive forward sequence as well as for auto balancing, default = 6.0
-    levelDegree = 6.0;
+    levelDegree = 7.0;
 
     //Amount of time a sensor condition needs to be met before changing states in seconds
     //Reduces the impact of sensor noice, but too high can make the auto run slower, default = 0.2
-    debounceTime = 0.2;
+    debounceTime = 0.3;
 		
 	//Amount of time to drive towards to scoring target when trying to bump the game piece off
 	//Time it takes to go from starting position to hit the scoring target
@@ -67,10 +68,12 @@ int autoBalance::secondsToTicks(double time){
 //routine for automatically driving onto and engaging the charge station.
 //returns a value from -1.0 to 1.0, which left and right motors should be set to.
 double autoBalance::autoBalanceRoutine(){
+    double tilt = getTilt();
     switch (state){
         //drive forwards to approach station, exit when tilt is detected
         case 0:
-            if(getTilt() > onChargeStationDegree){
+            printf("case 0: Tilt: %f Debounce: %d\n", tilt, debounceCount);
+            if(tilt > onChargeStationDegree){
                 debounceCount++;
             }
             if(debounceCount > secondsToTicks(debounceTime)){
@@ -81,10 +84,13 @@ double autoBalance::autoBalanceRoutine(){
             return robotSpeedFast;
         //driving up charge station, drive slower, stopping when level
         case 1:
-            if (getTilt() < levelDegree){
+            printf("case 1: Tilt: %f Debounce: %d\n", tilt, debounceCount);
+
+        
+            if (tilt < levelDegree){
                 debounceCount++; 
             }
-            if(debounceCount > secondsToTicks(debounceTime)){
+            if(debounceCount > secondsToTicks(debounceTime) / 2){
                 state = 2;
                 debounceCount = 0;
                 return 0;
@@ -92,7 +98,23 @@ double autoBalance::autoBalanceRoutine(){
             return robotSpeedSlow;
         //on charge station, stop motors and wait for end of auto
         case 2:
-            if(fabs(getTilt()) <= levelDegree/2){
+            printf("case 2: Tilt: %f Debounce: %d\n", tilt, debounceCount);
+
+            if(fabs(tilt) <= levelDegree/2){
+                debounceCount++;
+            }
+            if(debounceCount>secondsToTicks(debounceTime)){
+                state = 3;
+                debounceCount = 0;
+                return 0;
+            }
+            if(tilt >= levelDegree) {
+                return 0.1;
+            } else if(tilt <= -levelDegree) {
+                return -0.1;
+            }
+        case 3:
+            if(fabs(tilt) <= levelDegree/2){
                 debounceCount++;
             }
             if(debounceCount>secondsToTicks(debounceTime)){
@@ -100,13 +122,11 @@ double autoBalance::autoBalanceRoutine(){
                 debounceCount = 0;
                 return 0;
             }
-            if(getTilt() >= levelDegree) {
-                return 0.1;
-            } else if(getTilt() <= -levelDegree) {
-                return -0.1;
+            if(tilt >= levelDegree) {
+                return robotSpeedSlow/2;
+            } else if(tilt <= -levelDegree) {
+                return -robotSpeedSlow/2;
             }
-        case 3:
-            return 0;
     }
     return 0;
 }
