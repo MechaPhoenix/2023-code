@@ -86,6 +86,8 @@ public:
   void RobotInit() override
   {
 
+
+
     std::thread visionThread(VisionThread);
     visionThread.detach();
 
@@ -139,6 +141,7 @@ public:
     double speed = mAutoBalance.scoreAndBalance();
     setDrive(speed, speed);
     std::cout << "Score And Balance Running" << "\n";
+    std::cout << armEncoder.GetDistance();
   }
 
   void TeleopPeriodic() override
