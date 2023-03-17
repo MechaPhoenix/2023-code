@@ -81,7 +81,15 @@ public:
   void setDrive(double left, double right)
   {
     m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, left);
-    m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, right);
+    sleep(5);
+    m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::Disabled, left);
+    m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::Disabled, right);
+    sleep(2);
+    m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -left);
+    m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -right);
+    sleep(1);
+    m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::Disabled, left);
+    m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::Disabled, right);
   }
   void RobotInit() override
   {
