@@ -90,6 +90,10 @@ public:
     sleep(1);
     m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::Disabled, left);
     m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::Disabled, right);
+    std::cout << m_leftMotor.GetMotorOutputPercent();
+    std::cout << m_rightMotor.GetMotorOutputPercent();
+    std::cout << m_leftMotor.GetTemperature();
+    std::cout << m_rightMotor.GetTemperature();
   }
   void RobotInit() override
   {
