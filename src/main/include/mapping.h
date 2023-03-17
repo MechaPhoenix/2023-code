@@ -5,6 +5,7 @@
 #define ARM_CAN_LOW_NUM 10
 #define ARM_CAN_HIGH_NUM 11
 #define ARM_LOW_DRIVE 1
+#define ARM_HIGH_DRIVE 1
 #define ARM_LOW_TEST_BTN 11
 #define ARM_HIGH_TEST_BTN 12
 #define ARM_GRAB_TEST_BTN 9
