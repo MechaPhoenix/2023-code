@@ -29,7 +29,7 @@ class Robot : public frc::TimedRobot
     static void VisionThread() {
       cs::UsbCamera camera = frc::CameraServer::StartAutomaticCapture();
 
-      camera.SetResolution(640, 480);
+      camera.SetResolution(250, 250);
 
       cs::CvSink cvSink = frc::CameraServer::GetVideo();
 
