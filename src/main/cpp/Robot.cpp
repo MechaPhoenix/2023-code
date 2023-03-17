@@ -100,6 +100,7 @@ public:
   {
     double speed = mAutoBalance.scoreAndBalance();
     setDrive(speed, speed);
+    std::cout << "Score And Balance Running" << "\n";
   }
 
   void TeleopPeriodic() override
