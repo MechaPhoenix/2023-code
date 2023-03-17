@@ -7,3 +7,4 @@
 #define ARM_LOW_DRIVE 1
 #define ARM_LOW_TEST_BTN 11
 #define ARM_HIGH_TEST_BTN 12
+#define ARM_GRAB_TEST_BTN 9
