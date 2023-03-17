@@ -165,7 +165,7 @@ public:
         gripperSolenoid.Toggle();
         gripperSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
         // Prints Out
-        std::cout << "Solenoid Out!";
+        std::cout << "Solenoid Out!" << "\n";
         // Disables Solenoid and sets trigger to false
       }
       else
@@ -173,7 +173,7 @@ public:
         // Sends Back
         gripperSolenoid.Toggle();
         gripperSolenoid.Set(frc::DoubleSolenoid::Value::kReverse);
-        std::cout << "Solenoid Back";
+        std::cout << "Solenoid Back" << "\n";
       }
     }
   }
