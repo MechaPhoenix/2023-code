@@ -7,6 +7,7 @@
 #include "autoBalance.h"
 using namespace std;
 #include <frc/Joystick.h>
+#include <frc/PS4Controller.h>
 #include <frc/TimedRobot.h>
 #include <frc/Compressor.h>
 #include <frc/Solenoid.h>
@@ -65,6 +66,7 @@ class Robot : public frc::TimedRobot
   frc::Joystick m_stick{1};
   // Xbox Controller
   frc::XboxController ControllerX{2};
+  frc::PS4Controller ControllerP{0};
   // Motor Doubles
   double lastDriveRight{0};
   double lastDriveLeft{0};
@@ -245,7 +247,7 @@ public:
     // do not remove these. these are for testing.
     bool last4;
     double last4test;
-    bool joydown = m_stick.GetRawButtonPressed(3);
+    bool joydown = ControllerP.GetL2ButtonPressed();
 
     if (joydown != -last4test)
     {
@@ -260,7 +262,7 @@ public:
     // do not remove these. these are for testing.
     bool last3;
     double last3test;
-    bool joyup2 = m_stick.GetRawButtonPressed(6);
+    bool joyup2 = ControllerP.GetR2ButtonPressed();
 
     if (joyup2 != last3test);
     {
@@ -275,7 +277,7 @@ public:
   // do not remove these. these are for testing.
     bool last2;
     double last2test;
-    bool joydown2 = m_stick.GetRawButtonPressed(4);
+    bool joydown2 = ControllerP.GetL1ButtonPressed();
 
     if (joydown2 != -last2test);
     {
@@ -293,7 +295,7 @@ public:
     bool lastBumper;
     double lastBumperRB;
 
-    bool c_stick_rb_press = m_stick.GetRawButtonPressed(4);
+    bool c_stick_rb_press = ControllerP.GetR1ButtonPressed();
     // bool c_stick_rb_press = ControllerX.GetRightBumper();
     if (c_stick_rb_press != lastBumper)
     {
