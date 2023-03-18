@@ -62,7 +62,7 @@ class Robot : public frc::TimedRobot
   ctre::phoenix::motorcontrol::can::VictorSPX m_rightMotor2{16};
   frc::Encoder armEncoder{0, 1};
   // JoyStick
-  frc::Joystick m_stick{0};
+  frc::Joystick m_stick{1};
   // Xbox Controller
   frc::XboxController ControllerX{2};
   // Motor Doubles
@@ -209,6 +209,24 @@ public:
         gripperSolenoid.Set(frc::DoubleSolenoid::Value::kReverse);
       }
     }
+
+    const auto j1 = m_stick.GetRawButtonPressed(1);
+    const auto j2 = m_stick.GetRawButtonPressed(2);
+    const auto j3 = m_stick.GetRawButtonPressed(3);
+    const auto j4 = m_stick.GetRawButtonPressed(4);
+    const auto j5 = m_stick.GetRawButtonPressed(5);
+    const auto j6 = m_stick.GetRawButtonPressed(6);
+    const auto j7 = m_stick.GetRawButtonPressed(7);
+    const auto j8 = m_stick.GetRawButtonPressed(8);
+    const auto j9 = m_stick.GetRawButtonPressed(9);
+    const auto j10 = m_stick.GetRawButtonPressed(10);
+    const auto j11 = m_stick.GetRawButtonPressed(11);
+    const auto j12 = m_stick.GetRawButtonPressed(12);
+
+    if (j1 || j2 || j3 || j4 || j5 || j6 || j7 || j8 || j9 || j10 || j11 || j12) {
+      cout << "Button press registered";
+    }
+
     // do not remove these. these are for testing.
     bool last5;
     double last5test;
@@ -221,7 +239,7 @@ public:
       {
         a_lowMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, last5 * ARM_LOW_DRIVE);
       } else {
-        std::cout << "No hit" << std::endl;
+       // std::cout << "No hit" << std::endl;
       }
     }
     // do not remove these. these are for testing.
@@ -236,7 +254,7 @@ public:
       {
         a_lowMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, last4 * ARM_LOW_DRIVE);
       } else {
-        std::cout << "No Hit 2" << std::endl;
+       // std::cout << "No Hit 2" << std::endl;
       }
     }
     // do not remove these. these are for testing.
@@ -251,7 +269,7 @@ public:
       {
         a_highMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, last3 * ARM_HIGH_DRIVE);
       } else {
-        std::cout << "No Hit 3" << std::endl;
+      //  std::cout << "No Hit 3" << std::endl;
       }
     }
   // do not remove these. these are for testing.
@@ -266,7 +284,7 @@ public:
       {
         a_highMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, last2 * ARM_HIGH_DRIVE);
       } else {
-        std::cout << "No Hit 2" << std::endl;
+       // std::cout << "No Hit 2" << std::endl;
       }
     }
 
@@ -274,7 +292,8 @@ public:
 
     bool lastBumper;
     double lastBumperRB;
-    bool c_stick_rb_press = m_stick.GetRawButtonPressed(11);
+
+    bool c_stick_rb_press = m_stick.GetRawButtonPressed(4);
     // bool c_stick_rb_press = ControllerX.GetRightBumper();
     if (c_stick_rb_press != lastBumper)
     {
@@ -318,8 +337,9 @@ public:
       // Checks if trigger is pressed
       if (trigger)
       {
-        gripperSolenoid.Toggle();
-        gripperSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
+        std::cout << m_stick.GetButtonCount() << std::endl;
+        //gripperSolenoid.Toggle();
+       // gripperSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
         // Prints Out
         std::cout << "Solenoid Out!" << "\n";
         // Disables Solenoid and sets trigger to false
