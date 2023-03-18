@@ -199,7 +199,7 @@ public:
     // do not remove these. these are for testing.
     bool last5;
     double last5test;
-    bool joyup = m_stick.GetRawButtonPressed(ARM_MOTOR_JOY_UP_TEST);
+    bool joyup = m_stick.GetRawButtonPressed(5);
 
     if (joyup != last5test)
     {
@@ -214,7 +214,7 @@ public:
     // do not remove these. these are for testing.
     bool last4;
     double last4test;
-    bool joydown = m_stick.GetRawButtonPressed(ARM_MOTOR_JOY_DOWN_TEST);
+    bool joydown = m_stick.GetRawButtonPressed(3);
 
     if (joydown != -last4test)
     {
@@ -229,7 +229,7 @@ public:
     // do not remove these. these are for testing.
     bool last3;
     double last3test;
-    bool joyup2 = m_stick.GetRawButtonPressed(ARM_MOTOR_JOY_UP2_TEST);
+    bool joyup2 = m_stick.GetRawButtonPressed(6);
 
     if (joyup2 != last3test);
     {
@@ -244,7 +244,7 @@ public:
   // do not remove these. these are for testing.
     bool last2;
     double last2test;
-    bool joydown2 = m_stick.GetRawButtonPressed(ARM_MOTOR_JOY_DOWN2_TEST);
+    bool joydown2 = m_stick.GetRawButtonPressed(4);
 
     if (joydown2 != -last2test);
     {
