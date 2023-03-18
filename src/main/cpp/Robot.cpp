@@ -31,6 +31,7 @@ class Robot : public frc::TimedRobot
       cs::UsbCamera camera = frc::CameraServer::StartAutomaticCapture();
 
       camera.SetResolution(250, 250);
+      camera.SetFPS(10);
 
       cs::CvSink cvSink = frc::CameraServer::GetVideo();
 
