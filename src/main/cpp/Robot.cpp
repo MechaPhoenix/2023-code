@@ -259,7 +259,6 @@ public:
     bool trigger = ControllerP.GetTriangleButtonPressed();
     bool thumbButton = m_stick.GetRawButton(FEED_BUTTON);
     // Arm Trigger
-    bool comp = m_stick.GetRawButton(12);
     if (trigger != lastTrigger)
     {
       lastTrigger = trigger;
