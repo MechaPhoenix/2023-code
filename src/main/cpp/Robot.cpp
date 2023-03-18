@@ -230,20 +230,7 @@ public:
     }
 
     // do not remove these. these are for testing.
-    bool last5;
-    double last5test;
-    bool joyup = m_stick.GetRawButtonPressed(5);
-
-    if (joyup != last5test)
-    {
-      last5test = joyup;
-      if (joyup)
-      {
-        a_lowMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, last5 * ARM_LOW_DRIVE);
-      } else {
-       // std::cout << "No hit" << std::endl;
-      }
-    }
+   
     // do not remove these. these are for testing.
     bool last4;
     double last4test;
@@ -259,25 +246,10 @@ public:
        // std::cout << "No Hit 2" << std::endl;
       }
     }
-    // do not remove these. these are for testing.
-    bool last3;
-    double last3test;
-    bool joyup2 = ControllerP.GetR2ButtonPressed();
-
-    if (joyup2 != last3test);
-    {
-      last3test = joyup2;
-      if (joyup2)
-      {
-        a_highMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, last3 * ARM_HIGH_DRIVE);
-      } else {
-      //  std::cout << "No Hit 3" << std::endl;
-      }
-    }
   // do not remove these. these are for testing.
     bool last2;
     double last2test;
-    bool joydown2 = ControllerP.GetL1ButtonPressed();
+    bool joydown2 = ControllerP.GetR2ButtonPressed();
 
     if (joydown2 != -last2test);
     {
@@ -295,41 +267,14 @@ public:
     bool lastBumper;
     double lastBumperRB;
 
-    bool c_stick_rb_press = ControllerP.GetR1ButtonPressed();
-    // bool c_stick_rb_press = ControllerX.GetRightBumper();
-    if (c_stick_rb_press != lastBumper)
-    {
-      lastBumper = c_stick_rb_press;
-      if (c_stick_rb_press)
-      {
-        a_lowMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, lastBumper * ARM_LOW_DRIVE);
-      }
-      else
-      {
-        std::cout << "Bumper off"
-                  << "\n";
-      }
-    }
+   
 
       // do not remove these. these are for testing.
 
-    bool lastright;
-    double lastBumperR;
-    bool b_press = m_stick.GetRawButtonPressed(ARM_HIGH_TEST_BTN);
-
-    if (b_press != lastBumper)
-    {
-      lastBumperR = b_press;
-      if (b_press)
-      {
-        a_highMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, lastright * ARM_HIGH_DRIVE);
-      } else {
-        std::cout << "High Bumper Test off" << std::endl;
-      }
-    }
+    
 
     // Update the Trigger and stuff
-    bool trigger = m_stick.GetTrigger();
+    bool trigger = ControllerP.GetTriangleButtonPressed();
     bool thumbButton = m_stick.GetRawButton(FEED_BUTTON);
     // Arm Trigger
     bool comp = m_stick.GetRawButton(12);
@@ -339,9 +284,8 @@ public:
       // Checks if trigger is pressed
       if (trigger)
       {
-        std::cout << m_stick.GetButtonCount() << std::endl;
-        //gripperSolenoid.Toggle();
-       // gripperSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
+        gripperSolenoid.Toggle();
+        gripperSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
         // Prints Out
         std::cout << "Solenoid Out!" << "\n";
         // Disables Solenoid and sets trigger to false
