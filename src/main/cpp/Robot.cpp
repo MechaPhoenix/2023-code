@@ -8,6 +8,7 @@
 using namespace std;
 #include <frc/Joystick.h>
 #include <frc/PS4Controller.h>
+#include <frc/GenericHID.h>
 #include <frc/TimedRobot.h>
 #include <frc/Compressor.h>
 #include <frc/Solenoid.h>
@@ -63,6 +64,7 @@ class Robot : public frc::TimedRobot
   ctre::phoenix::motorcontrol::can::TalonSRX a_highMotor{ARM_CAN_HIGH_NUM};
   ctre::phoenix::motorcontrol::can::VictorSPX m_rightMotor2{16};
   frc::Encoder armEncoder{0, 1};
+  
   // JoyStick
   frc::Joystick m_stick{1};
   // Xbox Controller
@@ -267,6 +269,7 @@ public:
       {
         gripperSolenoid.Toggle();
         gripperSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
+        ControllerP.SetRumble(frc::GenericHID::RumbleType::kBothRumble, 1);
         // Prints Out
         std::cout << "Solenoid Out!" << "\n";
         // Disables Solenoid and sets trigger to false
