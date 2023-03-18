@@ -192,26 +192,7 @@ public:
       m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, rightPower * S_RIGHT_DRIVE);
       lastDriveRight = rightPower;
     }
-    // Arm Lower Motor Xbox Controller Handler
-      // do not remove these. these are for testing.
-    bool lastHit;
-    double lastHitS;
-    bool s_hit = ControllerX.GetLeftBumper();
-
-    if (s_hit != lastHitS)
-    {
-      lastHitS = s_hit;
-      if (s_hit)
-      {
-        gripperSolenoid.Toggle();
-        gripperSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
-        std::cout << "Solenoid Out" << std::endl;
-      } else {
-        gripperSolenoid.Toggle();
-        sleep(1);
-        gripperSolenoid.Set(frc::DoubleSolenoid::Value::kReverse);
-      }
-    }
+    
 
     const auto j1 = m_stick.GetRawButtonPressed(1);
     const auto j2 = m_stick.GetRawButtonPressed(2);
