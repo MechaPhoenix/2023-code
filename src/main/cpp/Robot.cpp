@@ -237,7 +237,7 @@ public:
 
     if (joydown2 != -last2test);
     {
-      last2test =joydown2;
+      last2test = joydown2;
       if (joydown2)
       {
         a_highMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, last2 * ARM_HIGH_DRIVE);
@@ -256,6 +256,23 @@ public:
       // do not remove these. these are for testing.
 
     
+    bool startup = ControllerP.GetPSButtonPressed();
+    double laststart;
+
+    if (startup != laststart);
+    {
+      laststart = startup;
+      if (startup)
+      {
+        ControllerP.SetRumble(frc::GenericHID::RumbleType::kBothRumble, 1);
+        std::cout << "Controller Starting up!" << std::endl;
+        std::cout << ControllerP.GetButtonCount(), "Buttons";
+        sleep(5);
+        ControllerP.SetRumble(frc::GenericHID::RumbleType::kBothRumble, 0);
+      } else {
+        exit(1);
+      }
+    }
 
     // Update the Trigger and stuff
     bool trigger = ControllerP.GetTriangleButtonPressed();
