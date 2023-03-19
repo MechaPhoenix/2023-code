@@ -10,7 +10,10 @@ using namespace std;
 #include <frc/PS4Controller.h>
 #include <frc/GenericHID.h>
 #include <frc/TimedRobot.h>
+#include <frc/PS4Controller.h>
 #include <frc/Compressor.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/smartdashboard/Field2d.h>
 #include <frc/Solenoid.h>
 #include <frc/DoubleSolenoid.h>
 #include <frc/drive/DifferentialDrive.h>
@@ -31,30 +34,28 @@ class Robot : public frc::TimedRobot
     static void VisionThread() {
       cs::UsbCamera camera = frc::CameraServer::StartAutomaticCapture();
 
-      camera.SetResolution(250, 250);
+      camera.SetResolution(640, 480);
       camera.SetFPS(10);
 
       cs::CvSink cvSink = frc::CameraServer::GetVideo();
 
-      cs::CvSource outputStream =
+      cs::CvSource output =
         frc::CameraServer::PutVideo("Rectangle", 640, 480);
 
-        cv::Mat mat;
+    cv::Mat mat;
 
-        while (true) {
+    while (true) {
+      if (cvSink.GrabFrame(mat) == 0) {
+        output.NotifyError(cvSink.GetError());
 
-          if (cvSink.GrabFrame(mat) == 0) {
+        continue;
+      }
 
-            outputStream.NotifyError(cvSink.GetError());
+      rectangle(mat, cv::Point(100, 100), cv::Point(400, 400),
+       cv::Scalar(255, 255, 255), 5);
 
-            continue;
-
-          }
-
-          rectangle(mat, cv::Point(100, 100), cv::Point(400, 400),
-            cv::Scalar(255, 255, 255), 5);
-          outputStream.PutFrame(mat);
-        }
+      output.PutFrame(mat);
+    }
     }
   // Motors
   ctre::phoenix::motorcontrol::can::VictorSPX m_leftMotor{15};
@@ -67,6 +68,7 @@ class Robot : public frc::TimedRobot
   
   // JoyStick
   frc::Joystick m_stick{1};
+  frc::PS4Controller ControllerP{0};
   // Xbox Controller
   frc::XboxController ControllerX{2};
   frc::PS4Controller ControllerP{0};
@@ -85,31 +87,16 @@ public:
 
   void setDrive(double left, double right)
   {
-    m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, left);
-    sleep(5);
-    m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::Disabled, left);
-    m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::Disabled, right);
-    sleep(2);
     m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -left);
     m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -right);
-    sleep(1);
-    m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::Disabled, left);
-    m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::Disabled, right);
-    std::cout << m_leftMotor.GetMotorOutputPercent();
-    std::cout << m_rightMotor.GetMotorOutputPercent();
-    std::cout << m_leftMotor.GetTemperature();
-    std::cout << m_rightMotor.GetTemperature();
   }
   void RobotInit() override
   {
 
-
-
     std::thread visionThread(VisionThread);
     visionThread.detach();
-
     // logs
-    std::cout << "Robot Started."
+    std::cout << "Robot Started.."
               << "\n";
     sleep(5);
     std::cout << "Ready to Move!"
@@ -148,6 +135,10 @@ public:
               << "\n";
   }
 
+  void RobotPeriodic() override {
+    frc::SmartDashboard::PutNumber("Tilt", mAutoBalance.getTilt());
+  }
+
   void AutonomousInit() override
   {
     std::cout << "Entering autonomous mode" << std::endl;
@@ -158,8 +149,7 @@ public:
   {
     double speed = mAutoBalance.scoreAndBalance();
     setDrive(speed, speed);
-    std::cout << "Score And Balance Running" << "\n";
-    std::cout << armEncoder.GetDistance();
+    frc::SmartDashboard::PutNumber("Speed", speed);
   }
 
   void TeleopPeriodic() override
@@ -169,6 +159,8 @@ public:
     // Read the joystick, calculate the drive stuff
     double x = m_stick.GetX(); // In terms of arcade drive, this is speed
     double y = m_stick.GetY(); // In terms of arcade drive, this is turn
+    // double x = ControllerP.GetLeftY(); // In terms of arcade drive, this is speed
+     //double y = ControllerP.GetRightX(); // In terms of arcade drive, this is turn
 
     // Drive Powers
     // Note if Wheels Invert
@@ -194,85 +186,24 @@ public:
       m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, rightPower * S_RIGHT_DRIVE);
       lastDriveRight = rightPower;
     }
-    
-
-    const auto j1 = m_stick.GetRawButtonPressed(1);
-    const auto j2 = m_stick.GetRawButtonPressed(2);
-    const auto j3 = m_stick.GetRawButtonPressed(3);
-    const auto j4 = m_stick.GetRawButtonPressed(4);
-    const auto j5 = m_stick.GetRawButtonPressed(5);
-    const auto j6 = m_stick.GetRawButtonPressed(6);
-    const auto j7 = m_stick.GetRawButtonPressed(7);
-    const auto j8 = m_stick.GetRawButtonPressed(8);
-    const auto j9 = m_stick.GetRawButtonPressed(9);
-    const auto j10 = m_stick.GetRawButtonPressed(10);
-    const auto j11 = m_stick.GetRawButtonPressed(11);
-    const auto j12 = m_stick.GetRawButtonPressed(12);
-
-    if (j1 || j2 || j3 || j4 || j5 || j6 || j7 || j8 || j9 || j10 || j11 || j12) {
-      cout << "Button press registered";
-    }
-
-    // do not remove these. these are for testing.
-   
-    // do not remove these. these are for testing.
-    bool last4;
-    double last4test;
-    bool joydown = ControllerP.GetL2ButtonPressed();
-
-    if (joydown != -last4test)
-    {
-      last4test = joydown;
-      if (joydown)
-      {
-        a_lowMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, last4 * ARM_LOW_DRIVE);
-      } else {
-       // std::cout << "No Hit 2" << std::endl;
-      }
-    }
-  // do not remove these. these are for testing.
-    bool last2;
-    double last2test;
-    bool joydown2 = ControllerP.GetR2ButtonPressed();
-
-    if (joydown2 != -last2test);
-    {
-      last2test = joydown2;
-      if (joydown2)
-      {
-        a_highMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, last2 * ARM_HIGH_DRIVE);
-      } else {
-       // std::cout << "No Hit 2" << std::endl;
-      }
-    }
-
-      // do not remove these. these are for testing.
-
-    bool lastBumper;
-    double lastBumperRB;
-
-   
-
-      // do not remove these. these are for testing.
-
-    
-    bool startup = ControllerP.GetPSButtonPressed();
-    double laststart;
-
-    if (startup != laststart);
-    {
-      laststart = startup;
-      if (startup)
-      {
-        ControllerP.SetRumble(frc::GenericHID::RumbleType::kBothRumble, 1);
-        std::cout << "Controller Starting up!" << std::endl;
-        std::cout << ControllerP.GetButtonCount(), "Buttons";
-        sleep(5);
-        ControllerP.SetRumble(frc::GenericHID::RumbleType::kBothRumble, 0);
-      } else {
-        exit(1);
-      }
-    }
+    // Arm Lower Motor Xbox Controller Handler
+    // bool lastBumper;
+    // double lastBumperRB;
+    // bool c_stick_rb_press = m_stick.GetRawButtonPressed(11);
+    // // bool c_stick_rb_press = ControllerX.GetRightBumper();
+    // if (c_stick_rb_press != lastBumper)
+    // {
+    //   lastBumper = c_stick_rb_press;
+    //   if (c_stick_rb_press)
+    //   {
+    //     a_lowMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, lastBumper * ARM_LOW_DRIVE);
+    //   }
+    //   else
+    //   {
+    //     std::cout << "Bumper off"
+    //               << "\n";
+    //   }
+    // }
 
     // Update the Trigger and stuff
     bool trigger = ControllerP.GetTriangleButtonPressed();
