@@ -92,7 +92,7 @@ public:
     std::thread visionThread(VisionThread);
     visionThread.detach();
     // logs
-    std::cout << "Robot Started."
+    std::cout << "Robot Started.."
               << "\n";
     sleep(5);
     std::cout << "Ready to Move!"
