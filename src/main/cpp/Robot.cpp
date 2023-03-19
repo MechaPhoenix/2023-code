@@ -8,7 +8,10 @@
 using namespace std;
 #include <frc/Joystick.h>
 #include <frc/TimedRobot.h>
+#include <frc/PS4Controller.h>
 #include <frc/Compressor.h>
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <frc/smartdashboard/Field2d.h>
 #include <frc/Solenoid.h>
 #include <frc/DoubleSolenoid.h>
 #include <frc/drive/DifferentialDrive.h>
@@ -16,9 +19,42 @@ using namespace std;
 #include <ctre/phoenix/motorcontrol/can/VictorSPX.h>
 #include <ctre/phoenix/motorcontrol/can/TalonSRX.h>
 #include <frc/Encoder.h>
+#include <cameraserver/CameraServer.h>
+#include <cstdio>
+#include <thread>
+#include <opencv2/core/core.hpp>
+#include <opencv2/core/types.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 class Robot : public frc::TimedRobot
 {
+  private:
+    static void VisionThread() {
+      cs::UsbCamera camera = frc::CameraServer::StartAutomaticCapture();
+
+      camera.SetResolution(640, 480);
+      camera.SetFPS(10);
+
+      cs::CvSink cvSink = frc::CameraServer::GetVideo();
+
+      cs::CvSource output =
+        frc::CameraServer::PutVideo("Rectangle", 640, 480);
+
+    cv::Mat mat;
+
+    while (true) {
+      if (cvSink.GrabFrame(mat) == 0) {
+        output.NotifyError(cvSink.GetError());
+
+        continue;
+      }
+
+      rectangle(mat, cv::Point(100, 100), cv::Point(400, 400),
+       cv::Scalar(255, 255, 255), 5);
+
+      output.PutFrame(mat);
+    }
+    }
   // Motors
   ctre::phoenix::motorcontrol::can::VictorSPX m_leftMotor{15};
   ctre::phoenix::motorcontrol::can::VictorSPX m_rightMotor{14};
@@ -28,7 +64,8 @@ class Robot : public frc::TimedRobot
   ctre::phoenix::motorcontrol::can::VictorSPX m_rightMotor2{16};
   frc::Encoder armEncoder{0, 1};
   // JoyStick
-  frc::Joystick m_stick{0};
+  frc::Joystick m_stick{1};
+  frc::PS4Controller ControllerP{0};
   // Xbox Controller
   frc::XboxController ControllerX{2};
   // Motor Doubles
@@ -46,11 +83,14 @@ public:
 
   void setDrive(double left, double right)
   {
-    m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, left);
-    m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, right);
+    m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -left);
+    m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -right);
   }
   void RobotInit() override
   {
+
+    std::thread visionThread(VisionThread);
+    visionThread.detach();
     // logs
     std::cout << "Robot Started."
               << "\n";
@@ -95,6 +135,10 @@ public:
               << "\n";
   }
 
+  void RobotPeriodic() override {
+    frc::SmartDashboard::PutNumber("Tilt", mAutoBalance.getTilt());
+  }
+
   void AutonomousInit() override
   {
     std::cout << "Entering autonomous mode" << std::endl;
@@ -104,6 +148,7 @@ public:
   {
     double speed = mAutoBalance.autoBalanceRoutine();
     setDrive(speed, speed);
+    frc::SmartDashboard::PutNumber("Speed", speed);
   }
 
   void TeleopPeriodic() override
@@ -113,6 +158,8 @@ public:
     // Read the joystick, calculate the drive stuff
     double x = m_stick.GetX(); // In terms of arcade drive, this is speed
     double y = m_stick.GetY(); // In terms of arcade drive, this is turn
+    // double x = ControllerP.GetLeftY(); // In terms of arcade drive, this is speed
+     //double y = ControllerP.GetRightX(); // In terms of arcade drive, this is turn
 
     // Drive Powers
     // Note if Wheels Invert
@@ -137,23 +184,23 @@ public:
       lastDriveRight = rightPower;
     }
     // Arm Lower Motor Xbox Controller Handler
-    bool lastBumper;
-    double lastBumperRB;
-    bool c_stick_rb_press = m_stick.GetRawButtonPressed(11);
-    // bool c_stick_rb_press = ControllerX.GetRightBumper();
-    if (c_stick_rb_press != lastBumper)
-    {
-      lastBumper = c_stick_rb_press;
-      if (c_stick_rb_press)
-      {
-        a_lowMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, lastBumper * ARM_LOW_DRIVE);
-      }
-      else
-      {
-        std::cout << "Bumper off"
-                  << "\n";
-      }
-    }
+    // bool lastBumper;
+    // double lastBumperRB;
+    // bool c_stick_rb_press = m_stick.GetRawButtonPressed(11);
+    // // bool c_stick_rb_press = ControllerX.GetRightBumper();
+    // if (c_stick_rb_press != lastBumper)
+    // {
+    //   lastBumper = c_stick_rb_press;
+    //   if (c_stick_rb_press)
+    //   {
+    //     a_lowMotor.Set(ctre::phoenix::motorcontrol::TalonSRXControlMode::PercentOutput, lastBumper * ARM_LOW_DRIVE);
+    //   }
+    //   else
+    //   {
+    //     std::cout << "Bumper off"
+    //               << "\n";
+    //   }
+    // }
 
     // Update the Trigger and stuff
     bool trigger = m_stick.GetTrigger();
