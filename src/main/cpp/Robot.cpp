@@ -2,110 +2,17 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-#include <iostream>
-#include "mapping.h"
-#include "autoBalance.h"
 using namespace std;
-#include <frc/Joystick.h>
-#include <frc/PS4Controller.h>
-#include <frc/GenericHID.h>
-#include <frc/TimedRobot.h>
-#include <frc/PS4Controller.h>
-#include <frc/Compressor.h>
-#include <frc/smartdashboard/SmartDashboard.h>
-#include <frc/smartdashboard/Field2d.h>
-#include <frc/Solenoid.h>
-#include <frc/DoubleSolenoid.h>
-#include <frc/drive/DifferentialDrive.h>
-#include <frc/XboxController.h>
-#include <ctre/phoenix/motorcontrol/can/VictorSPX.h>
-#include <ctre/phoenix/motorcontrol/can/TalonSRX.h>
-#include <frc/Encoder.h>
-#include <cameraserver/CameraServer.h>
-#include <cstdio>
-#include <thread>
-#include <opencv2/core/core.hpp>
-#include <opencv2/core/types.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+#include "Robot.h"
 
-class Robot : public frc::TimedRobot
-{
-  private:
-    static void VisionThread() {
-      cs::UsbCamera camera = frc::CameraServer::StartAutomaticCapture();
-
-      camera.SetResolution(640, 480);
-      camera.SetFPS(10);
-
-      cs::CvSink cvSink = frc::CameraServer::GetVideo();
-
-      cs::CvSource output =
-        frc::CameraServer::PutVideo("Rectangle", 640, 480);
-
-    cv::Mat mat;
-
-    while (true) {
-      if (cvSink.GrabFrame(mat) == 0) {
-        output.NotifyError(cvSink.GetError());
-
-        continue;
-      }
-
-      rectangle(mat, cv::Point(100, 100), cv::Point(400, 400),
-       cv::Scalar(255, 255, 255), 5);
-
-      output.PutFrame(mat);
-    }
-    }
-  // Motors
-  ctre::phoenix::motorcontrol::can::VictorSPX m_leftMotor{15};
-  ctre::phoenix::motorcontrol::can::VictorSPX m_rightMotor{14};
-  ctre::phoenix::motorcontrol::can::VictorSPX m_leftMotor2{17};
-  ctre::phoenix::motorcontrol::can::TalonSRX a_lowMotor{ARM_CAN_LOW_NUM};
-  ctre::phoenix::motorcontrol::can::TalonSRX a_highMotor{ARM_CAN_HIGH_NUM};
-  ctre::phoenix::motorcontrol::can::VictorSPX m_rightMotor2{16};
-  frc::Encoder armEncoder{0, 1};
-  
-  // JoyStick
-  frc::Joystick m_stick{1};
-  frc::PS4Controller ControllerP{0};
-  // Xbox Controller
-  frc::XboxController ControllerX{2};
-  frc::PS4Controller ControllerP{0};
-  // Motor Doubles
-  double lastDriveRight{0};
-  double lastDriveLeft{0};
-  // Compressor
-  frc::Compressor pcmCompressor{0, frc::PneumaticsModuleType::CTREPCM};
-  // Solenoid
-  frc::DoubleSolenoid gripperSolenoid{frc::PneumaticsModuleType::CTREPCM, 0, 1};
-  // Sol Bools
-  bool lastTrigger = false;
-
-public:
-  autoBalance mAutoBalance;
-
-  void setDrive(double left, double right)
+  void Robot::setDrive(double left, double right)
   {
     m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -left);
     m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -right);
   }
-  void RobotInit() override
-  {
 
-    std::thread visionThread(VisionThread);
-    visionThread.detach();
-    // logs
-    std::cout << "Robot Started.."
-              << "\n";
-    sleep(5);
-    std::cout << "Ready to Move!"
-              << "\n";
-    sleep(5);
-    std::cout << "Debug Loaded."
-              << "\n";
-    std::cout << "No Error Found."
-              << "\n";
+  void Robot::RobotInit()
+  {
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
@@ -135,24 +42,27 @@ public:
               << "\n";
   }
 
-  void RobotPeriodic() override {
+  void Robot::RobotPeriodic() {
     frc::SmartDashboard::PutNumber("Tilt", mAutoBalance.getTilt());
+    frc::SmartDashboard::PutNumber("Roll_Tele", mAutoBalance.getRoll());
+    frc::SmartDashboard::PutNumber("Pitch_Tele", mAutoBalance.getPitch());
+    frc::SmartDashboard::PutString("Auto State", mAutoBalance.getState());
   }
 
-  void AutonomousInit() override
+  void Robot::AutonomousInit()
   {
     std::cout << "Entering autonomous mode" << std::endl;
     std::cout << "Ready to Go" << std::endl;
   }
 
-  void AutonomousPeriodic() override
+  void Robot::AutonomousPeriodic()
   {
     double speed = mAutoBalance.scoreAndBalance();
     setDrive(speed, speed);
     frc::SmartDashboard::PutNumber("Speed", speed);
   }
 
-  void TeleopPeriodic() override
+  void Robot::TeleopPeriodic()
   {
     // Drive with arcade style
     // This is where all our fun stuff goes :)
@@ -206,18 +116,16 @@ public:
     // }
 
     // Update the Trigger and stuff
-    bool trigger = ControllerP.GetTriangleButtonPressed();
     bool thumbButton = m_stick.GetRawButton(FEED_BUTTON);
     // Arm Trigger
-    if (trigger != lastTrigger)
+    if (thumbButton != lastTrigger)
     {
-      lastTrigger = trigger;
+      lastTrigger = thumbButton;
       // Checks if trigger is pressed
-      if (trigger)
+      if (thumbButton)
       {
         gripperSolenoid.Toggle();
         gripperSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
-        ControllerP.SetRumble(frc::GenericHID::RumbleType::kBothRumble, 1);
         // Prints Out
         std::cout << "Solenoid Out!" << "\n";
         // Disables Solenoid and sets trigger to false
@@ -230,8 +138,10 @@ public:
         std::cout << "Solenoid Back" << "\n";
       }
     }
+    m_arm.ArmPeriodic();
   }
-};
+
+
 
 // Code Above checks if Trigger is pressed and fires thr Solenoid from the Pneumatic Pistons
 

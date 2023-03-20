@@ -18,7 +18,7 @@ public:
     }
     inline float getAverage() const {
         float fSum = 0.f;
-        for( int i = 0; i < arraySize(m_grfValues); i++) {
+        for( uint i = 0; i < arraySize(m_grfValues); i++) {
             fSum += m_grfValues[i];
         }
         return fSum / arraySize(m_grfValues);
@@ -36,6 +36,7 @@ class autoBalance{
         double autoBalanceRoutine();
         double scoreAndBalance();
         int secondsToTicks(double time);
+        std::string getState();
         
     private:
         frc::BuiltInAccelerometer mAccel{};

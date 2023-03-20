@@ -44,7 +44,7 @@ double autoBalance::getPitch(){
     double fAX = mAccel.GetX();
     double fAY = mAccel.GetY();
     double fAZ = mAccel.GetZ();
-    double fS = fAY * fAY + fAZ * fAZ;
+    //double fS = fAY * fAY + fAZ * fAZ;
 
     double fAtan2 = std::atan2((-fAX) , std::sqrt(fAY * fAY + fAZ * fAZ)) * 57.3;
 //    printf( "%lf, %lf, %lf : %lf %lf %lf\n\n", fAX, fAY, fAZ, fS, std::sqrt(fS), fAtan2 );
@@ -67,6 +67,15 @@ double autoBalance::getTilt(){
 //         return -std::sqrt(pitch*pitch + roll*roll);
 //     }
 return getRoll();
+}
+
+std::string autoBalance::getState(){
+    switch (state){
+        case 0: return "Approach";
+        case 1: return "Climbing";
+        case 2: return "Balancing";
+        default: return "Unknown";
+    } 
 }
 
 int autoBalance::secondsToTicks(double time){
@@ -210,6 +219,7 @@ double autoBalance::scoreAndBalance(){
             } else if(getTilt() <= -levelDegree) {
                 return -robotSpeedSlow/2;
             }
+            break;
         case 4:
             return 0;
     }
