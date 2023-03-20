@@ -12,9 +12,15 @@
 class RobotArm {
  public:
   RobotArm();
+  void LoadParameters();
   void ArmPeriodic();
+  double GetLowerArmAngle();
+  double GetHigherArmAngle();
+  void SetLowerArmAngle();
+  void SetHigherArmAngle();
+  //void setArmPosition();
 
   private:
-    ctre::phoenix::motorcontrol::can::TalonSRX m_lowerArmMotor{ARM_CAN_LOW_NUM};
-    ctre::phoenix::motorcontrol::can::TalonSRX m_upperArmMotor{ARM_CAN_HIGH_NUM};
+    ctre::phoenix::motorcontrol::can::TalonSRX m_lowerArmMotorController{ARM_CAN_LOW_NUM};
+    ctre::phoenix::motorcontrol::can::TalonSRX m_higherArmMotorController{ARM_CAN_HIGH_NUM};
 };
