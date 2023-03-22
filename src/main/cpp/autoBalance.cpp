@@ -40,33 +40,8 @@ autoBalance::autoBalance(){
 	doubleTapTime = 0.3;
 }
 
-double autoBalance::getPitch(){
-    double fAX = mAccel.GetX();
-    double fAY = mAccel.GetY();
-    double fAZ = mAccel.GetZ();
-    //double fS = fAY * fAY + fAZ * fAZ;
-
-    double fAtan2 = std::atan2((-fAX) , std::sqrt(fAY * fAY + fAZ * fAZ)) * 57.3;
-//    printf( "%lf, %lf, %lf : %lf %lf %lf\n\n", fAX, fAY, fAZ, fS, std::sqrt(fS), fAtan2 );
-    return fAtan2;
-}
-
 double autoBalance::getRoll(){
     return std::atan2(mAccel.GetY() , mAccel.GetZ()) * 57.3;
-}
-
-//returns the magnititude of the robot's tilt calculated by the root of
-//pitch^2 + roll^2, used to compensate for diagonally mounted rio
-double autoBalance::getTilt(){
-// 	double pitch = getPitch();
-// 	double roll = getRoll();
-//   //  printf( "p: %f, r:%f\n", pitch, roll);
-//     if((pitch + roll)>= 0){
-//         return std::sqrt(pitch*pitch + roll*roll);
-//     } else {
-//         return -std::sqrt(pitch*pitch + roll*roll);
-//     }
-return getRoll();
 }
 
 std::string autoBalance::getState(){
