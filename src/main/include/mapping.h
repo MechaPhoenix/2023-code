@@ -1,4 +1,5 @@
 #define FEED_BUTTON 1
+
 #define S_LEFT_DRIVE 1
 #define S_RIGHT_DRIVE 1
 #define ARM_MOTOR_BTN 1 
@@ -14,3 +15,7 @@
 #define ARM_MOTOR_JOY_UP2_TEST 6
 #define ARM_MOTOR_JOY_DOWN2_TEST 4
 #define ARM_NUM_TEST Button(11)
+
+#define JOYSTICK_SENSITIVITY 0.8
+#define JOYSTICK_ROT_SENS 0.6
+#define AUTO_SENS 0.9

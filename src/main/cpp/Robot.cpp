@@ -47,6 +47,8 @@ using namespace std;
     frc::SmartDashboard::PutNumber("Roll_Tele", mAutoBalance.getRoll());
     frc::SmartDashboard::PutNumber("Pitch_Tele", mAutoBalance.getPitch());
     frc::SmartDashboard::PutString("Auto State", mAutoBalance.getState());
+    frc::SmartDashboard::PutNumber("Lower Encoder Value", m_arm.GetLowerArmAngle());
+    frc::SmartDashboard::PutNumber("Higher Encoder Value", m_arm.GetHigherArmAngle());
   }
 
   void Robot::AutonomousInit()
@@ -67,8 +69,8 @@ using namespace std;
     // Drive with arcade style
     // This is where all our fun stuff goes :)
     // Read the joystick, calculate the drive stuff
-    double x = m_stick.GetX(); // In terms of arcade drive, this is speed
-    double y = m_stick.GetY(); // In terms of arcade drive, this is turn
+    double x = m_stick.GetX()*JOYSTICK_ROT_SENS; // In terms of arcade drive, this is speed
+    double y = m_stick.GetY()*JOYSTICK_SENSITIVITY; // In terms of arcade drive, this is turn
     // double x = ControllerP.GetLeftY(); // In terms of arcade drive, this is speed
      //double y = ControllerP.GetRightX(); // In terms of arcade drive, this is turn
 
@@ -138,6 +140,20 @@ using namespace std;
         std::cout << "Solenoid Back" << "\n";
       }
     }
+
+     if (m_stick.GetRawButton(8))
+    {
+      m_arm.SetLowerArmAngle(30);
+    }
+
+    if(m_stick.GetRawButtonPressed(9)){
+      m_arm.ResetArms();
+    }
+
+    if (m_stick.GetRawButtonPressed(7)){
+      m_arm.LoadParameters();
+    }
+
     m_arm.ArmPeriodic();
   }
 

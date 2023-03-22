@@ -16,9 +16,11 @@ class RobotArm {
   void ArmPeriodic();
   double GetLowerArmAngle();
   double GetHigherArmAngle();
-  void SetLowerArmAngle();
-  void SetHigherArmAngle();
-  //void setArmPosition();
+  void SetLowerArmAngle(double angle);
+  void SetHigherArmAngle(double angle);
+  void ZeroArm();
+  void ResetArms();
+  void setArmPosition(std::pair<double, double> angles);
 
   private:
     ctre::phoenix::motorcontrol::can::TalonSRX m_lowerArmMotorController{ARM_CAN_LOW_NUM};

@@ -38,6 +38,7 @@ class Robot : public frc::TimedRobot
   // Sol Bools
   bool lastTrigger = false;
 
+
     // Drive Motors
   ctre::phoenix::motorcontrol::can::VictorSPX m_leftMotor{15};
   ctre::phoenix::motorcontrol::can::VictorSPX m_rightMotor{14};
