@@ -37,7 +37,6 @@ class autoBalance{
         double scoreAndBalance();
         int secondsToTicks(double time);
         int getState();
-        double crossChargeStation();
         
     private:
 

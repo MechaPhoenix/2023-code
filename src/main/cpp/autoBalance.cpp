@@ -99,7 +99,6 @@ bool autoBalance::trackedTicksGreaterThan(double magnitude)
       return false;
     }
   }
-
   return true;
 }
 
@@ -110,12 +109,7 @@ double autoBalance::avgTrackedTicks()
   {
     tot += previousTickDeltas[i];
   }
-
   return tot / GYRO_TICK_N;
-}
-
-double autoBalance::crossChargeStation(){
-
 }
 
 //routine for automatically driving onto and engaging the charge station.
