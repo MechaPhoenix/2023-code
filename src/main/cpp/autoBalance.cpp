@@ -114,7 +114,7 @@ double autoBalance::avgTrackedTicks()
   return tot / GYRO_TICK_N;
 }
 
-void autoBalance::crossChargeStation(){
+double autoBalance::crossChargeStation(){
 
 }
 

@@ -37,9 +37,11 @@ class autoBalance{
         double scoreAndBalance();
         int secondsToTicks(double time);
         int getState();
-        double climbMode(int direction, double tilt, frc::AnalogGyro *g);
+        double crossChargeStation();
         
     private:
+
+        double climbMode(int direction, double tilt, frc::AnalogGyro *g);
 
         // Gyro functions
         double getAngleDelta(frc::AnalogGyro *g);
@@ -49,7 +51,6 @@ class autoBalance{
         bool trackedTicksNegative();
         bool trackedTicksGreaterThan(double magnitude);
         double avgTrackedTicks();
-        void crossChargeStation();
 
         // Tracked gyro values
         int gyroTicks = 0;

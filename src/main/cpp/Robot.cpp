@@ -38,18 +38,8 @@ void Robot::RobotInit()
   // Optional
   // pcmCompressor.Disable();
 
-  // Prints
-  std::cout << "Compressor Enabled"
-            << "\n";
-  std::cout << "Check if Running"
-            << "\n";
-  std::cout << "RLS On and Flashing"
-            << "\n";
-
   // Solenoid
   gripperSolenoid.Set(frc::DoubleSolenoid::Value::kOff);
-  std::cout << "Solenoid Off"
-            << "\n";
 }
 
 void Robot::RobotPeriodic() {
@@ -62,8 +52,6 @@ void Robot::RobotPeriodic() {
 
 void Robot::AutonomousInit()
 {
-  std::cout << "Entering autonomous mode" << std::endl;
-  std::cout << "Ready to Go" << std::endl;
 }
 
 void Robot::AutonomousPeriodic()
@@ -113,7 +101,6 @@ void Robot::TeleopPeriodic()
       gripperSolenoid.Toggle();
       gripperSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
       // Prints Out
-      std::cout << "Solenoid Out!" << "\n";
       // Disables Solenoid and sets trigger to false
     }
     else
@@ -121,7 +108,6 @@ void Robot::TeleopPeriodic()
       // Sends Back
       gripperSolenoid.Toggle();
       gripperSolenoid.Set(frc::DoubleSolenoid::Value::kReverse);
-      std::cout << "Solenoid Back" << "\n";
     }
   }
 
