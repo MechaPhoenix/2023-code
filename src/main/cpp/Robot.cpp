@@ -7,8 +7,8 @@ using namespace std;
 
 void Robot::setDrive(double left, double right)
 {
-  std::cout << left*1.05 << ", " << right << std::endl;
-  m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -left*1.05);
+  std::cout << left*1.11 << ", " << right << std::endl;
+  m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -left*1.11);
   m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -right);
 }
 

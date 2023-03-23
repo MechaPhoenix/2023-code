@@ -6,7 +6,7 @@
 #include <cmath>
 #include <frc/AnalogGyro.h>
 
-#define GYRO_TICK_N 3
+#define GYRO_TICK_N 2
 #define arraySize(a) (sizeof(a)/sizeof(a[0]))
 #define DEFAULT_SLOW_SPEED 0.4;
 class rollingAverage
@@ -49,6 +49,7 @@ class autoBalance{
         bool trackedTicksNegative();
         bool trackedTicksGreaterThan(double magnitude);
         double avgTrackedTicks();
+        void crossChargeStation();
 
         // Tracked gyro values
         int gyroTicks = 0;
@@ -65,4 +66,5 @@ class autoBalance{
         double singleTapTime;
         double scoringBackUpTime;
         double doubleTapTime;
+        int autoDirection;
 };
