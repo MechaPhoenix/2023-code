@@ -1,4 +1,4 @@
 //(lower arm angle, higher arm angle)
-#define PICKUP_ANGLES make_pair(13.0, 12.0)
-#define UPPER_SCORE_ANGLES make_pair(1.0, 1.0)
-#define LOWER_SCORE_ANGLES make_pair(1.0, 1.0)
+#define PICKUP_ANGLES make_pair(0.0, 0.0)
+#define SCORE_ANGLES make_pair(0.0, 0.0)
+#define HUMAN_PLAYER_ANGLES make_pair(0.0, 0.0)

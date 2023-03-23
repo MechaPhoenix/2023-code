@@ -4,8 +4,11 @@
 #pragma once
 #include <frc/BuiltInAccelerometer.h>
 #include <cmath>
+#include <frc/AnalogGyro.h>
 
+#define GYRO_TICK_N 3
 #define arraySize(a) (sizeof(a)/sizeof(a[0]))
+#define DEFAULT_SLOW_SPEED 0.4;
 class rollingAverage
 {
     float m_grfValues[8] { 0.f };
@@ -30,15 +33,27 @@ class autoBalance{
     public:
         rollingAverage avgTilt;
         autoBalance();
-        double getPitch();
-        double getRoll();
-        double getTilt();
-        double autoBalanceRoutine();
+        double autoBalanceRoutine(frc::AnalogGyro *g);
         double scoreAndBalance();
         int secondsToTicks(double time);
-        std::string getState();
+        int getState();
+        double climbMode(int direction, double tilt, frc::AnalogGyro *g);
         
     private:
+
+        // Gyro functions
+        double getAngleDelta(frc::AnalogGyro *g);
+        void trackAngleDelta(double delta);
+        int getTicksSinceLastEval();
+        void evaluatedData();
+        bool trackedTicksNegative();
+        bool trackedTicksGreaterThan(double magnitude);
+        double avgTrackedTicks();
+
+        // Tracked gyro values
+        int gyroTicks = 0;
+        float previousTickDeltas[GYRO_TICK_N] = { 0.f };
+
         frc::BuiltInAccelerometer mAccel{};
         int state;
         int debounceCount;

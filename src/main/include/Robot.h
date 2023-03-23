@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <frc/Joystick.h>
+#include <frc/AnalogGyro.h>
 #include <frc/GenericHID.h>
 #include <frc/TimedRobot.h>
 #include <frc/Compressor.h>
@@ -14,9 +15,11 @@
 #include "RobotArm.h"
 #include "mapping.h"
 #include "autoBalance.h"
+#include "armAngles.h"
 
 class Robot : public frc::TimedRobot
 {
+
   private:
 
     void RobotInit() override;
@@ -24,7 +27,6 @@ class Robot : public frc::TimedRobot
     void AutonomousInit() override;
     void AutonomousPeriodic() override;
     void TeleopPeriodic() override;
-
 
   // JoyStick
   frc::Joystick m_stick{1};
@@ -37,22 +39,23 @@ class Robot : public frc::TimedRobot
   frc::DoubleSolenoid gripperSolenoid{frc::PneumaticsModuleType::CTREPCM, 0, 1};
   // Sol Bools
   bool lastTrigger = false;
+  // Gyroscope
+  frc::AnalogGyro g{0};
 
 
-    // Drive Motors
+  // Drive Motors
   ctre::phoenix::motorcontrol::can::VictorSPX m_leftMotor{15};
   ctre::phoenix::motorcontrol::can::VictorSPX m_rightMotor{14};
   ctre::phoenix::motorcontrol::can::VictorSPX m_leftMotor2{17};
   ctre::phoenix::motorcontrol::can::VictorSPX m_rightMotor2{16};
 
   // Arm subsystem
-RobotArm m_arm;
+  RobotArm m_arm;
 
-// Auto Mode
-autoBalance mAutoBalance;
+  // Auto Mode
+  autoBalance mAutoBalance;
 
-
-// Robot methods
-void setDrive(double left, double right);
+  // Robot methods
+  void setDrive(double left, double right);
 
 };
