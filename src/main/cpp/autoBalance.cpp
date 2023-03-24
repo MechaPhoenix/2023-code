@@ -18,7 +18,7 @@ autoBalance::autoBalance(){
     
     //Speed the robot drives while balancing itself on the charge station.
     //Should be roughly half the fast speed, to make the robot more accurate, default = 0.2
-    robotSpeedSlow = autoDirection*0.4;
+    robotSpeedSlow = autoDirection*0.43;
 
     //Angle where the robot knows it is on the charge station, default = 13.0
     onChargeStationDegree = autoDirection*10.0;
@@ -56,8 +56,7 @@ double autoBalance::getAngleDelta(frc::AnalogGyro *g)
   return round(-g->GetRate()*100)/100;
 }
 
-void autoBalance::trackAngleDelta(double delta)
-{
+void autoBalance::trackAngleDelta(double delta){
   // We need too cycle all of the values
   for (uint i = GYRO_TICK_N-1; i > 0; i--)
   {
@@ -67,18 +66,15 @@ void autoBalance::trackAngleDelta(double delta)
   gyroTicks++;
 }
 
-int autoBalance::getTicksSinceLastEval()
-{
+int autoBalance::getTicksSinceLastEval(){
   return gyroTicks;
 }
 
-void autoBalance::evaluatedData()
-{
+void autoBalance::evaluatedData(){
   gyroTicks = 0;
 }
 
-bool autoBalance::trackedTicksNegative()
-{
+bool autoBalance::trackedTicksNegative(){
   for (uint i = 0; i < GYRO_TICK_N; i++)
   {
     if (previousTickDeltas[i] > 0)
@@ -90,8 +86,7 @@ bool autoBalance::trackedTicksNegative()
   return true;
 }
 
-bool autoBalance::trackedTicksGreaterThan(double magnitude)
-{
+bool autoBalance::trackedTicksGreaterThan(double magnitude){
   for (uint i = 0; i < GYRO_TICK_N; i++)
   {
     if (abs(previousTickDeltas[i]) < magnitude)
@@ -103,8 +98,7 @@ bool autoBalance::trackedTicksGreaterThan(double magnitude)
   return true;
 }
 
-double autoBalance::avgTrackedTicks()
-{
+double autoBalance::avgTrackedTicks(){
   float tot = 0.f;
   for (uint i = 0; i < GYRO_TICK_N; i++)
   {
@@ -112,10 +106,6 @@ double autoBalance::avgTrackedTicks()
   }
 
   return tot / GYRO_TICK_N;
-}
-
-void autoBalance::crossChargeStation(){
-
 }
 
 //routine for automatically driving onto and engaging the charge station.

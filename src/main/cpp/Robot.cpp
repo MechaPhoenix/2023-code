@@ -71,6 +71,8 @@ void Robot::AutonomousPeriodic()
   double speed = mAutoBalance.autoBalanceRoutine(&g);
   setDrive(speed, speed);
   frc::SmartDashboard::PutNumber("Speed", speed);
+  m_arm.SetHigherArmAngle(0);
+  m_arm.SetLowerArmAngle(0);
 }
 
 void Robot::TeleopPeriodic()
@@ -129,10 +131,10 @@ void Robot::TeleopPeriodic()
     m_arm.LoadParameters();
   }
 
-  if (m_stick.GetRawButtonPressed(3)){m_arm.armState = 0;};
-  if (m_stick.GetRawButtonPressed(4)){m_arm.armState = 1;};
-  if (m_stick.GetRawButtonPressed(5)){m_arm.armState = 2;};
-  if (m_stick.GetRawButtonPressed(6)){m_arm.armState = 3;};
+  if (m_stick.GetRawButtonPressed(3)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 0;};
+  if (m_stick.GetRawButtonPressed(4)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 1;};
+  if (m_stick.GetRawButtonPressed(5)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 2;};
+  if (m_stick.GetRawButtonPressed(6)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 3;};
 
   m_arm.ArmPeriodic();
 }

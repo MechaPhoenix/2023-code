@@ -49,7 +49,6 @@ class autoBalance{
         bool trackedTicksNegative();
         bool trackedTicksGreaterThan(double magnitude);
         double avgTrackedTicks();
-        void crossChargeStation();
 
         // Tracked gyro values
         int gyroTicks = 0;
