@@ -16,6 +16,7 @@ void Robot::RobotInit()
 {
   frc::SmartDashboard::PutBoolean("Do Full Auto", mAutoBalance.doingBalance);
   frc::SmartDashboard::PutBoolean("Do Any Auto", mAutoBalance.doAnyAuto);
+  frc::SmartDashboard::PutBoolean("Do Taxi Balance", mAutoBalance.taxiBalance);
   // We need to invert one side of the drivetrain so that positive voltages
   // result in both sides moving forward. Depending on how your robot's
   // gearbox is constructed, you might have to invert the left side instead.
@@ -60,14 +61,15 @@ void Robot::RobotPeriodic() {
   frc::SmartDashboard::PutNumber("Higher Encoder Value", m_arm.GetHigherArmAngle());
   frc::SmartDashboard::PutNumber("Gyro Delta", round(-g.GetRate()*100)/100);
   frc::SmartDashboard::PutNumber("Gyro Angle", -g.GetAngle());
+  if (m_stick.GetRawButtonPressed(7)){mAutoBalance.taxiBalance = !mAutoBalance.taxiBalance;};
+  if (m_stick.GetRawButtonPressed(8)){mAutoBalance.doingBalance = !mAutoBalance.doingBalance;};
+  if (m_stick.GetRawButtonPressed(9)){mAutoBalance.doAnyAuto = !mAutoBalance.doAnyAuto;};
 }
 
 void Robot::AutonomousInit()
 {
   std::cout << "Entering autonomous mode" << std::endl;
   std::cout << "Ready to Go" << std::endl;
-  mAutoBalance.doingBalance = true;
-  mAutoBalance.doAnyAuto = true;
 }
 
 void Robot::AutonomousPeriodic()
@@ -81,11 +83,13 @@ void Robot::AutonomousPeriodic()
 
 void Robot::TeleopPeriodic()
 {
+  if (m_stick.GetRawButtonPressed(11)){currentJoySens = DEFENCE_JOYSTICK_SENSITIVITY;};
+  if (m_stick.GetRawButtonPressed(12)){currentJoySens = BALANCE_JOYSTICK_SENSITIVITY;};
   // Drive with arcade style
   // This is where all our fun stuff goes :)
   // Read the joystick, calculate the drive stuff
   double x = m_stick.GetX()*JOYSTICK_ROT_SENS; // In terms of arcade drive, this is speed
-  double y = m_stick.GetY()*JOYSTICK_SENSITIVITY; // In terms of arcade drive, this is turn
+  double y = m_stick.GetY()*currentJoySens; // In terms of arcade drive, this is turn
 
   // Drive
   double leftPower = (y - x) / 2;

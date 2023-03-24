@@ -14,14 +14,14 @@ autoBalance::autoBalance(){
     autoDirection = 1;
 
     //Speed the robot drived while scoring/approaching station, default = 0.4
-    robotSpeedFast = autoDirection*0.5;
+    robotSpeedFast = autoDirection*0.53;
     
     //Speed the robot drives while balancing itself on the charge station.
     //Should be roughly half the fast speed, to make the robot more accurate, default = 0.2
     robotSpeedSlow = autoDirection*0.39;
 
     //Angle where the robot knows it is on the charge station, default = 13.0
-    onChargeStationDegree = autoDirection*10.0;
+    onChargeStationDegree = autoDirection*9.0;
 
     //Angle where the robot can assume it is level on the charging station
     //Used for exiting the drive forward sequence as well as for auto balancing, default = 6.0
@@ -113,7 +113,8 @@ double autoBalance::avgTrackedTicks(){
 double autoBalance::autoBalanceRoutine(frc::AnalogGyro *g){
     double roll = -g->GetAngle();
     if (!doAnyAuto) { return 0.0; }
-    if (!doingBalance) { state = 4; }
+    if (taxiBalance) { state = 4; }
+    if (!doingBalance) { state = 5; }
 
     switch (state){
         //drive forwards to approach station, exit when tilt is detected
@@ -137,6 +138,13 @@ double autoBalance::autoBalanceRoutine(frc::AnalogGyro *g){
         case 3:
             return climbMode(-1, roll, g);
         case 4:
+            if (taxiTicks < AUTO_TICK_NUM) {
+                taxiTicks++;
+                return -0.8;
+            } else {
+                state = 0;
+            }break;
+        case 5:
             if (taxiTicks < AUTO_TICK_NUM) {
                 taxiTicks++;
                 return robotSpeedFast;

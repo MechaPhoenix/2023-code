@@ -43,6 +43,7 @@ class Robot : public frc::TimedRobot
   // Gyroscope
   frc::AnalogGyro g{0};
 
+  double currentJoySens = DEFENCE_JOYSTICK_SENSITIVITY;
 
   // Drive Motors
   ctre::phoenix::motorcontrol::can::VictorSPX m_leftMotor{15};
