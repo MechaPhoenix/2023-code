@@ -14,6 +14,7 @@ void Robot::setDrive(double left, double right)
 
 void Robot::RobotInit()
 {
+  frc::SmartDashboard::PutBoolean("Do Full Auto", mAutoBalance.doingBalance);
   // We need to invert one side of the drivetrain so that positive voltages
   // result in both sides moving forward. Depending on how your robot's
   // gearbox is constructed, you might have to invert the left side instead.
@@ -64,6 +65,7 @@ void Robot::AutonomousInit()
 {
   std::cout << "Entering autonomous mode" << std::endl;
   std::cout << "Ready to Go" << std::endl;
+  mAutoBalance.doingBalance = frc::SmartDashboard::GetBoolean("Do Full Auto", false);
 }
 
 void Robot::AutonomousPeriodic()

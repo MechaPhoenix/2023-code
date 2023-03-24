@@ -38,6 +38,7 @@ class autoBalance{
         int secondsToTicks(double time);
         int getState();
         double climbMode(int direction, double tilt, frc::AnalogGyro *g);
+        bool doingBalance = true;
         
     private:
 

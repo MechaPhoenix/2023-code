@@ -112,29 +112,31 @@ double autoBalance::avgTrackedTicks(){
 //returns a value from -1.0 to 1.0, which left and right motors should be set to.
 double autoBalance::autoBalanceRoutine(frc::AnalogGyro *g){
     double roll = -g->GetAngle();
-
-    switch (state){
-        //drive forwards to approach station, exit when tilt is detected
-        case 0:
-            if(roll > onChargeStationDegree){
-                state = 1;
-            }
-            return robotSpeedFast;
-        //driving up charge station, drive slower, stopping when level
-        case 1:
-            return climbMode(1, roll, g);
-        //on charge station, stop motors and wait for end of auto
-        case 2:
-            if(roll < -onChargeStationDegree){
-                state = 3;
-            } else if(roll > onChargeStationDegree){
-                state = 1;
-            }else{
-                return 0;
-            }break;
-        case 3:
-            return climbMode(-1, roll, g);
-        default: return 0;
+    if (doingBalance)
+    {
+        switch (state){
+            //drive forwards to approach station, exit when tilt is detected
+            case 0:
+                if(roll > onChargeStationDegree){
+                    state = 1;
+                }
+                return robotSpeedFast;
+            //driving up charge station, drive slower, stopping when level
+            case 1:
+                return climbMode(1, roll, g);
+            //on charge station, stop motors and wait for end of auto
+            case 2:
+                if(roll < -onChargeStationDegree){
+                    state = 3;
+                } else if(roll > onChargeStationDegree){
+                    state = 1;
+                }else{
+                    return 0;
+                }break;
+            case 3:
+                return climbMode(-1, roll, g);
+            default: return 0;
+        }
     }
     return 0;
 }
