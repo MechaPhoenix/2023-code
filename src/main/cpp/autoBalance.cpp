@@ -14,14 +14,14 @@ autoBalance::autoBalance(){
     autoDirection = 1;
 
     //Speed the robot drived while scoring/approaching station, default = 0.4
-    robotSpeedFast = autoDirection*0.53;
+    robotSpeedFast = autoDirection*0.5;
     
     //Speed the robot drives while balancing itself on the charge station.
     //Should be roughly half the fast speed, to make the robot more accurate, default = 0.2
-    robotSpeedSlow = autoDirection*0.39;
+    robotSpeedSlow = autoDirection*0.3;
 
     //Angle where the robot knows it is on the charge station, default = 13.0
-    onChargeStationDegree = autoDirection*9.0;
+    onChargeStationDegree = autoDirection*10.0;
 
     //Angle where the robot can assume it is level on the charging station
     //Used for exiting the drive forward sequence as well as for auto balancing, default = 6.0

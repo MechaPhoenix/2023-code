@@ -7,16 +7,12 @@ using namespace std;
 
 void Robot::setDrive(double left, double right)
 {
-  std::cout << left*1.11 << ", " << right << std::endl;
-  m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -left*1.11);
+  m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -left);
   m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -right);
 }
 
 void Robot::RobotInit()
 {
-  frc::SmartDashboard::PutBoolean("Do Full Auto", mAutoBalance.doingBalance);
-  frc::SmartDashboard::PutBoolean("Do Any Auto", mAutoBalance.doAnyAuto);
-  frc::SmartDashboard::PutBoolean("Do Taxi Balance", mAutoBalance.taxiBalance);
   // We need to invert one side of the drivetrain so that positive voltages
   // result in both sides moving forward. Depending on how your robot's
   // gearbox is constructed, you might have to invert the left side instead.
@@ -64,6 +60,9 @@ void Robot::RobotPeriodic() {
   if (m_stick.GetRawButtonPressed(7)){mAutoBalance.taxiBalance = !mAutoBalance.taxiBalance;};
   if (m_stick.GetRawButtonPressed(8)){mAutoBalance.doingBalance = !mAutoBalance.doingBalance;};
   if (m_stick.GetRawButtonPressed(9)){mAutoBalance.doAnyAuto = !mAutoBalance.doAnyAuto;};
+  frc::SmartDashboard::PutBoolean("Do Full Auto", mAutoBalance.doingBalance);
+  frc::SmartDashboard::PutBoolean("Do Any Auto", mAutoBalance.doAnyAuto);
+  frc::SmartDashboard::PutBoolean("Do Taxi Balance", mAutoBalance.taxiBalance);
 }
 
 void Robot::AutonomousInit()
