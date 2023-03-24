@@ -111,7 +111,7 @@ void RobotArm::LoadParameters() {
 		}
 	}else{
 		std::cout << "moving higher arm first" << std::endl;
-		std::cout << "Checking if low angle " << GetHigherArmAngle() << " is between " << angles[armState][1]-2 << " and " << angles[armState][1]+2 << std::endl;
+		std::cout << "Checking if high angle " << GetHigherArmAngle() << " is between " << angles[armState][1]-2 << " and " << angles[armState][1]+2 << std::endl;
 		if (!(inRange(angles[armState][1]-2, angles[armState][1]+2 ,GetHigherArmAngle()))){
 			std::cout << "setting high angle to " << angles[armState][1] << std::endl;
 			SetHigherArmAngle(angles[armState][1]);

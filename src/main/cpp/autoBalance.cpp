@@ -18,7 +18,7 @@ autoBalance::autoBalance(){
     
     //Speed the robot drives while balancing itself on the charge station.
     //Should be roughly half the fast speed, to make the robot more accurate, default = 0.2
-    robotSpeedSlow = autoDirection*0.43;
+    robotSpeedSlow = autoDirection*0.39;
 
     //Angle where the robot knows it is on the charge station, default = 13.0
     onChargeStationDegree = autoDirection*10.0;
@@ -112,31 +112,38 @@ double autoBalance::avgTrackedTicks(){
 //returns a value from -1.0 to 1.0, which left and right motors should be set to.
 double autoBalance::autoBalanceRoutine(frc::AnalogGyro *g){
     double roll = -g->GetAngle();
-    if (doingBalance)
-    {
-        switch (state){
-            //drive forwards to approach station, exit when tilt is detected
-            case 0:
-                if(roll > onChargeStationDegree){
-                    state = 1;
-                }
+    if (!doAnyAuto) { return 0.0; }
+    if (!doingBalance) { state = 4; }
+
+    switch (state){
+        //drive forwards to approach station, exit when tilt is detected
+        case 0:
+            if(roll > onChargeStationDegree){
+                state = 1;
+            }
+            return robotSpeedFast;
+        //driving up charge station, drive slower, stopping when level
+        case 1:
+            return climbMode(1, roll, g);
+        //on charge station, stop motors and wait for end of auto
+        case 2:
+            if(roll < -onChargeStationDegree){
+                state = 3;
+            } else if(roll > onChargeStationDegree){
+                state = 1;
+            }else{
+                return 0;
+            }break;
+        case 3:
+            return climbMode(-1, roll, g);
+        case 4:
+            if (taxiTicks < AUTO_TICK_NUM) {
+                taxiTicks++;
                 return robotSpeedFast;
-            //driving up charge station, drive slower, stopping when level
-            case 1:
-                return climbMode(1, roll, g);
-            //on charge station, stop motors and wait for end of auto
-            case 2:
-                if(roll < -onChargeStationDegree){
-                    state = 3;
-                } else if(roll > onChargeStationDegree){
-                    state = 1;
-                }else{
-                    return 0;
-                }break;
-            case 3:
-                return climbMode(-1, roll, g);
-            default: return 0;
-        }
+            } else {
+                return 0.0;
+            }
+        default: return 0;
     }
     return 0;
 }

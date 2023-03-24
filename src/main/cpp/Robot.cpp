@@ -15,6 +15,7 @@ void Robot::setDrive(double left, double right)
 void Robot::RobotInit()
 {
   frc::SmartDashboard::PutBoolean("Do Full Auto", mAutoBalance.doingBalance);
+  frc::SmartDashboard::PutBoolean("Do Any Auto", mAutoBalance.doAnyAuto);
   // We need to invert one side of the drivetrain so that positive voltages
   // result in both sides moving forward. Depending on how your robot's
   // gearbox is constructed, you might have to invert the left side instead.
@@ -65,7 +66,8 @@ void Robot::AutonomousInit()
 {
   std::cout << "Entering autonomous mode" << std::endl;
   std::cout << "Ready to Go" << std::endl;
-  mAutoBalance.doingBalance = frc::SmartDashboard::GetBoolean("Do Full Auto", false);
+  mAutoBalance.doingBalance = true;
+  mAutoBalance.doAnyAuto = true;
 }
 
 void Robot::AutonomousPeriodic()
@@ -106,32 +108,45 @@ void Robot::TeleopPeriodic()
   }
 
   // Update the Trigger and stuff
-  bool thumbButton = m_stick.GetRawButton(FEED_BUTTON);
-  // Arm Trigger
-  if (thumbButton != lastTrigger)
-  {
-    lastTrigger = thumbButton;
-    // Checks if trigger is pressed
-    if (thumbButton)
-    {
+  bool engageButton = m_stick.GetRawButton(FEED_BUTTON);
+  bool releaseButton = m_stick.GetRawButton(2);
+
+  if (engageButton) {
+    if (!lastEngage) {
       gripperSolenoid.Toggle();
       gripperSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
-      // Prints Out
-      std::cout << "Solenoid Out!" << "\n";
-      // Disables Solenoid and sets trigger to false
     }
-    else
-    {
-      // Sends Back
+    lastEngage = true;
+    lastRelease = false;
+  } else if (releaseButton) {
+    if (!lastRelease) {
       gripperSolenoid.Toggle();
       gripperSolenoid.Set(frc::DoubleSolenoid::Value::kReverse);
-      std::cout << "Solenoid Back" << "\n";
     }
+    lastRelease = true;
+    lastEngage = false;
   }
 
-  if (m_stick.GetRawButtonPressed(7)){
-    m_arm.LoadParameters();
-  }
+  // // Arm Trigger
+  // if (thumbButton != lastTrigger)
+  // {
+  //   lastTrigger = thumbButton;
+  //   // Checks if trigger is pressed
+  //   if (thumbButton)
+  //   {
+      
+  //     // Prints Out
+  //     std::cout << "Solenoid Out!" << "\n";
+  //     // Disables Solenoid and sets trigger to false
+  //   }
+  //   else
+  //   {
+  //     // Sends Back
+  //     gripperSolenoid.Toggle();
+  //     gripperSolenoid.Set(frc::DoubleSolenoid::Value::kReverse);
+  //     std::cout << "Solenoid Back" << "\n";
+  //   }
+  //}
 
   if (m_stick.GetRawButtonPressed(3)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 0;};
   if (m_stick.GetRawButtonPressed(4)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 1;};

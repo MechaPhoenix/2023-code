@@ -38,7 +38,8 @@ class Robot : public frc::TimedRobot
   // Solenoid
   frc::DoubleSolenoid gripperSolenoid{frc::PneumaticsModuleType::CTREPCM, 0, 1};
   // Sol Bools
-  bool lastTrigger = false;
+  bool lastEngage = false;
+  bool lastRelease = false;
   // Gyroscope
   frc::AnalogGyro g{0};
 
