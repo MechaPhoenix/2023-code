@@ -35,7 +35,6 @@ class autoBalance{
         rollingAverage avgTilt;
         autoBalance();
         double autoBalanceRoutine(frc::AnalogGyro *g);
-        double scoreAndBalance();
         int secondsToTicks(double time);
         int getState();
         double climbMode(int direction, double tilt, frc::AnalogGyro *g);
