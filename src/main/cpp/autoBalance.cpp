@@ -63,7 +63,7 @@ void autoBalance::trackAngleDelta(double delta){
     previousTickDeltas[i] = previousTickDeltas[i-1];
   }
   previousTickDeltas[0] = delta;
-  gyroTicks++;
+  //gyroTicks++;
 }
 
 int autoBalance::getTicksSinceLastEval(){
@@ -128,9 +128,17 @@ double autoBalance::autoBalanceRoutine(frc::AnalogGyro *g){
             return climbMode(1, roll, g);
         //on charge station, stop motors and wait for end of auto
         case 2:
+            if(brakeTicks<1){
+                brakeTicks++;
+                return -currentSpeed;
+            }else if(brakeTicks<=BRAKE_TICK_NUM){
+                brakeTicks++;
+                return currentSpeed;
+            }
+            
             if(roll < -onChargeStationDegree){
                 state = 3;
-            } else if(roll > onChargeStationDegree){
+            }else if(roll > onChargeStationDegree){
                 state = 1;
             }else{
                 return 0;
@@ -138,18 +146,21 @@ double autoBalance::autoBalanceRoutine(frc::AnalogGyro *g){
         case 3:
             return climbMode(-1, roll, g);
         case 4:
-            if (taxiTicks < AUTO_TICK_NUM) {
+            if (taxiTicks < CHARGE_TAXI_TICKS) {
                 taxiTicks++;
                 return -0.8;
             } else {
                 state = 0;
             }break;
         case 5:
-            if (taxiTicks < AUTO_TICK_NUM) {
+            if (taxiTicks < AUTO_SCORE_TICKS) {
+                taxiTicks++;
+                return -1; 
+            }else if (taxiTicks < AUTO_TAXI_TICKS) {
                 taxiTicks++;
                 return robotSpeedFast;
-            } else {
-                return 0.0;
+            }else if (taxiTicks < AUTO_BRAKE_TICKS) {
+                return -robotSpeedSlow;
             }
         default: return 0;
     }
@@ -158,12 +169,13 @@ double autoBalance::autoBalanceRoutine(frc::AnalogGyro *g){
 
 double autoBalance::climbMode(int direction, double roll, frc::AnalogGyro *g){
     trackAngleDelta(getAngleDelta(g));
-    if (getTicksSinceLastEval()>=GYRO_TICK_N){
-        if (avgTrackedTicks() > direction * -1){
-            state = 2;
-        }
-        evaluatedData();
+    //if (getTicksSinceLastEval()>=GYRO_TICK_N){
+    if (avgTrackedTicks() > direction * -1){
+        state = 2;
+        brakeTicks = 0;
     }
+        //evaluatedData();
+    //}
     return direction*std::max(robotSpeedSlow, 0.25);
 }
 

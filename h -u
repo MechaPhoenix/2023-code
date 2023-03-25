@@ -1,0 +1,338 @@
+[33mcommit 4f0842b2f46806acda668e17ae35ce9836e22c37[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;32mnew_main[m[33m)[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 24 19:42:04 2023 -0400
+
+    reconfigured auto values for working motors
+
+[33mcommit 7b89023c926ef50788e0239552caa8e5637e2236[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 24 18:28:57 2023 -0400
+
+    added variable teleop speed, taxi/taxi balance, tweaked balance code
+
+[33mcommit c80ba71103bb90ee40bbd0d1f5114a0f457197c5[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 24 15:07:04 2023 -0400
+
+    safety commit
+
+[33mcommit 5b5fa4be704ed8163abac16a50e52a3562c0309e[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 24 10:47:45 2023 -0400
+
+    added disable auto feature
+
+[33mcommit 583e72cc37b34c5a6d1b3250d7c156bc954d5087[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 24 07:53:15 2023 -0400
+
+    added high-low arm debugging
+
+[33mcommit 3b42e91549309fe1406c1df237ef90509f22e91c[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Thu Mar 23 20:55:31 2023 -0400
+
+    reordered arm movements
+
+[33mcommit 8f962d12d58e00adf36b08fe42b97705c89d85f3[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Thu Mar 23 19:35:58 2023 -0400
+
+    added working PID for arm
+
+[33mcommit 4cbb26fa16bd5974faf9530998093b63fae2fe86[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Wed Mar 22 21:01:14 2023 -0400
+
+    theoretically fixed stuttering issue on autobalance
+
+[33mcommit dd71e0834227528e0d7ff4b9987422c8a1ee2944[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Wed Mar 22 20:04:23 2023 -0400
+
+    auto works now
+
+[33mcommit f05db346e38f08d4d5fd653f98d0a5ff81f9eb19[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Tue Mar 21 22:24:33 2023 -0400
+
+    started changing autobalance code
+
+[33mcommit c25923ea2ec42394bf19c69096c48b44b7c8a547[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Tue Mar 21 21:57:38 2023 -0400
+
+    made code changes. fixed bad old code. people have not been making commits often enough to summarize everything.
+
+[33mcommit 7e348467374aca42bd3e1933266476de33449fc8[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Mon Mar 20 19:48:50 2023 -0400
+
+    Working on PID Published Code.
+
+[33mcommit 2d7e1d1c3e2f579b6f40bc7b8ce96e3bf2189145[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Mon Mar 20 18:39:24 2023 -0400
+
+    Cleaned up the Robot code and setup a basic structure for the arm subsystem
+
+[33mcommit 7c2beedcb229ffc56d26b531c1b8c9388a625f41[m
+Merge: b14435a a5567b2
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Sat Mar 18 22:21:05 2023 -0400
+
+    added auto-balance code
+
+[33mcommit a5567b20cd757947388532ee46c5c1598c2e7a08[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Sat Mar 18 22:18:22 2023 -0400
+
+    Reverted to old code due to issues with the new code
+
+[33mcommit 5e6cc4e6e56771bfcbb1372557c97fedfdd72454[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Sat Mar 18 22:13:18 2023 -0400
+
+    Reverted to old code due to issues with the new code
+
+[33mcommit b14435a1e0b85c2bbf879d1251036bed90f04a95[m
+Merge: d1f4a7d 2dbc6a3
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Sat Mar 18 12:49:37 2023 -0400
+
+    Merge branch 'main' of https://github.com/MechaPhoenix/2023-code
+
+[33mcommit 2dbc6a35c4484b6f94ac1cf1ebb13a3ff144fc4b[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Sat Mar 18 12:48:48 2023 -0400
+
+    Fixed a Controller Code Error.
+
+[33mcommit c52aa28df1f07a95bb320518a1a4b8310dbc8d66[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Sat Mar 18 12:38:32 2023 -0400
+
+    Fixed a Controller Code Error.
+
+[33mcommit d1f4a7d961a52ca43b005c0b721babf8f1757d6b[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Sat Mar 18 12:37:33 2023 -0400
+
+    Added Rumbling to the PS4 Controller on Certain Interactions
+
+[33mcommit 3e604c9a66a6b37610c62eb64306e9645495ba92[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Sat Mar 18 12:02:06 2023 -0400
+
+    Fixed a Controller Code Error.
+
+[33mcommit 18ed410d29e2fc6c04c3967acc66afd261929318[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Sat Mar 18 11:35:09 2023 -0400
+
+    Removed Some Testing code for Xbox Controllers and swapped for PS4.
+
+[33mcommit 2dde1479e4781ae59e632f76eed42ac812a28e33[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Sat Mar 18 11:27:38 2023 -0400
+
+    Updated Camera Settings Limited to 10 fps.
+
+[33mcommit b68063872085b0212bcfd456e65b22457cd76770[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Sat Mar 18 11:21:35 2023 -0400
+
+    Swicthed from Xbox Controller to PS4
+
+[33mcommit cc42b38d4573ff2bd45bd79a98f61db4279960cc[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Sat Mar 18 11:14:20 2023 -0400
+
+    Swicthed from Xbox Controller to PS4
+
+[33mcommit 7018eb3ae21658a2155f7ea6b91bc32a8cb6d790[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 21:24:21 2023 -0400
+
+    Adding Debugging to Joystick.
+
+[33mcommit 735fb6e3d9ad8f86cb697eee1c18f77cce3dc319[m
+Merge: f04a608 fbea664
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 20:31:49 2023 -0400
+
+    Merge branch 'main' of https://github.com/MechaPhoenix/2023-code
+
+[33mcommit f04a608d9b511ff87d9b621aed2b7b0908d34c81[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 20:30:26 2023 -0400
+
+    Pushed Bug Fixes
+
+[33mcommit fbea664ff1923af94efaf13a26aa42d708b45488[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 19:12:27 2023 -0400
+
+    Pushed some bug fixes
+
+[33mcommit a1d930d8b63a3047f8f1a046e93c2d2f83ee6576[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 18:16:37 2023 -0400
+
+    Fixed a typo error
+
+[33mcommit 25be1d3e0b49e3333cd79d8d6d8552714f2f787b[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 18:14:58 2023 -0400
+
+    Updated the Auto Code
+
+[33mcommit 01b3bd62bb05c64e86eba7c0e1c44d6c308a9bf2[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 18:06:59 2023 -0400
+
+    Added backwards Auto Drive
+
+[33mcommit 78d121985a6748af83197f9a8b2cc2beb5be5f07[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 17:29:41 2023 -0400
+
+    Updated Motor Control
+
+[33mcommit bd7458379680bb8ea1ae659a9b4a915c8d4b1cf6[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 14:32:32 2023 -0400
+
+    Added new Resolution to the ThreadVision Camera Web Server
+
+[33mcommit c723bf7135cfa66a44f0ce6e1632aacbf31bf54f[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 13:57:21 2023 -0400
+
+    Added VisonThread for the Camera Web Server.
+
+[33mcommit 139ae9f8ef260b4e9bc61fd615ccb84ff0314c12[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 13:19:19 2023 -0400
+
+    Added more Motor Control Options for the Joystick for the arm testing.
+
+[33mcommit bc343d279e6cdc4756cbe9fc7c9312017dd37297[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 13:13:31 2023 -0400
+
+    Added more Motor Control Options for the Joystick for the arm testing.
+
+[33mcommit 95a4a4ccc62d336d5a66fc8fe9f55675c3243418[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 13:13:16 2023 -0400
+
+    Added more Motor Control Options for the Joystick for the arm testing.
+
+[33mcommit afee3870c4d7a84c95a65d842942d2a5054a134f[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 12:23:31 2023 -0400
+
+    Added new Arm Motor Control for top motor.
+
+[33mcommit 0813e21204694499ad5cab8ebce756bbee91b87b[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 12:20:47 2023 -0400
+
+    Pushed Bug Fixes
+
+[33mcommit 220e1a76fccbb29557ebf91664752d5e28c81c90[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 12:18:46 2023 -0400
+
+    Updated Defines.
+
+[33mcommit 05ed48ca4df3b79ca96092969f923391b4c19f94[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 11:46:57 2023 -0400
+
+    Added a new Grabber Test Define
+
+[33mcommit c580ac690852e1b7253752c24a0d37b4cc81ea41[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Fri Mar 17 11:25:21 2023 -0400
+
+    Updated Auto Balance Settings
+
+[33mcommit f00aa6f34abaaf4376d7f027a2b0f9541f98eab7[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Thu Mar 16 21:56:23 2023 -0400
+
+    Fixed Debug Printing Issues
+
+[33mcommit 639958f9013c93c2b740532614434a7f38bc6199[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Thu Mar 16 21:40:57 2023 -0400
+
+    Added new Defines to the mapping.h for testing modes.
+
+[33mcommit 7a801675e3bcbb8db78670528125874b3485127e[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Thu Mar 16 21:25:39 2023 -0400
+
+    Updated Automode Auto Level
+
+[33mcommit d2a09b97329dd42d198dc09031e129a1a6048da2[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Thu Mar 16 18:25:40 2023 -0400
+
+    added autonomous implementation for autobalance
+
+[33mcommit 7896ecd8ddfe5d407ac438367a236b36359d0c0a[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Thu Mar 16 17:30:47 2023 -0400
+
+    Temp Change to Arm Code for testin.
+
+[33mcommit 5f728ca2b638b866341fba45b383b8b5d541b346[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Thu Mar 16 17:24:55 2023 -0400
+
+    Fixed a Compressor Issue
+
+[33mcommit 6889c11786bc9eaa6c5d3fc4ecede43a4aaa5c34[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Thu Mar 16 16:49:38 2023 -0400
+
+    Updated Solenoid Debug Code
+
+[33mcommit 5f113b781d26d3444ef14bd40446cd36df9de242[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Thu Mar 16 15:49:05 2023 -0400
+
+    added auto-balance code
+
+[33mcommit c83a10053aa5c08a581164ecf155a292538c61fc[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Thu Mar 16 15:47:40 2023 -0400
+
+    added auto-balance code
+
+[33mcommit 0cf4a95dfbd9ce33b118bdb5efe4563aaf905af9[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Thu Mar 16 14:56:11 2023 -0400
+
+    Added a new include for Encoders
+
+[33mcommit 6a6119b7e1654c1785bf3a9b41f645fc3787b57a[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Thu Mar 16 14:47:44 2023 -0400
+
+    Fixed an error
+
+[33mcommit fa51b000e659f1af8b969a33da5e7b72bb4e5367[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Thu Mar 16 14:42:10 2023 -0400
+
+    Removed a typo
+
+[33mcommit afb158f65cef2e689cabe027681f7a21f5c90add[m
+Author: MechaPhoenix <rez.mecha7722@gmail.com>
+Date:   Thu Mar 16 14:32:37 2023 -0400
+
+    added backlog of working robot code

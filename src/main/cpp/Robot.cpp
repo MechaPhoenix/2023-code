@@ -52,6 +52,7 @@ void Robot::RobotInit()
 }
 
 void Robot::RobotPeriodic() {
+  
   frc::SmartDashboard::PutNumber("Auto State", mAutoBalance.getState());
   frc::SmartDashboard::PutNumber("Lower Encoder Value", m_arm.GetLowerArmAngle());
   frc::SmartDashboard::PutNumber("Higher Encoder Value", m_arm.GetHigherArmAngle());
@@ -74,6 +75,7 @@ void Robot::AutonomousInit()
 void Robot::AutonomousPeriodic()
 {
   double speed = mAutoBalance.autoBalanceRoutine(&g);
+  mAutoBalance.currentSpeed = speed;
   setDrive(speed, speed);
   frc::SmartDashboard::PutNumber("Speed", speed);
   m_arm.SetHigherArmAngle(0);
@@ -82,8 +84,8 @@ void Robot::AutonomousPeriodic()
 
 void Robot::TeleopPeriodic()
 {
-  if (m_stick.GetRawButtonPressed(11)){currentJoySens = DEFENCE_JOYSTICK_SENSITIVITY;};
-  if (m_stick.GetRawButtonPressed(12)){currentJoySens = BALANCE_JOYSTICK_SENSITIVITY;};
+  //if (m_stick.GetRawButtonPressed(11)){currentJoySens = BALANCE_JOYSTICK_SENSITIVITY;};
+  //if (m_stick.GetRawButtonPressed(12)){currentJoySens = DEFENCE_JOYSTICK_SENSITIVITY;};
   // Drive with arcade style
   // This is where all our fun stuff goes :)
   // Read the joystick, calculate the drive stuff
@@ -151,12 +153,12 @@ void Robot::TeleopPeriodic()
   //   }
   //}
 
-  if (m_stick.GetRawButtonPressed(3)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 0;};
-  if (m_stick.GetRawButtonPressed(4)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 1;};
-  if (m_stick.GetRawButtonPressed(5)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 2;};
-  if (m_stick.GetRawButtonPressed(6)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 3;};
+  // if (m_stick.GetRawButtonPressed(3)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 0;};
+  // if (m_stick.GetRawButtonPressed(4)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 1;};
+  // if (m_stick.GetRawButtonPressed(5)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 2;};
+  // if (m_stick.GetRawButtonPressed(6)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 3;};
 
-  m_arm.ArmPeriodic();
+  // m_arm.ArmPeriodic();
 }
 
 // Drive Doubles

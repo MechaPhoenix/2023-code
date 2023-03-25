@@ -6,8 +6,12 @@
 #include <cmath>
 #include <frc/AnalogGyro.h>
 
-#define GYRO_TICK_N 2
-#define AUTO_TICK_NUM 125
+#define GYRO_TICK_N 3
+#define CHARGE_TAXI_TICKS 125
+#define AUTO_SCORE_TICKS 30
+#define AUTO_TAXI_TICKS 110
+#define AUTO_BRAKE_TICKS 113
+#define BRAKE_TICK_NUM 5
 #define arraySize(a) (sizeof(a)/sizeof(a[0]))
 #define DEFAULT_SLOW_SPEED 0.4;
 class rollingAverage
@@ -39,9 +43,11 @@ class autoBalance{
         int getState();
         double climbMode(int direction, double tilt, frc::AnalogGyro *g);
         bool taxiBalance = false;
-        bool doingBalance = true;
+        bool doingBalance = false;
         bool doAnyAuto = true;
         int taxiTicks = 0;
+        int brakeTicks = 0;
+        double currentSpeed = 0;
 
     private:
 
