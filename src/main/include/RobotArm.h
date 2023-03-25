@@ -9,7 +9,6 @@
 
 #include <ctre/phoenix/motorcontrol/can/VictorSPX.h>
 #include <ctre/phoenix/motorcontrol/can/TalonSRX.h>
-#include <iostream>
 
 class RobotArm {
  public:
@@ -20,15 +19,15 @@ class RobotArm {
   double GetHigherArmAngle();
   void SetLowerArmAngle(double angle);
   void SetHigherArmAngle(double angle);
+  void ZeroArm();
   void ResetArms();
   void armPositioning();
   bool inRange(double low, double high, double x);
   int armState;
-  int oldArmState;
   double angles[4][2] = {{HOME_ANGLE_LOWER, HOME_ANGLE_HIGHER},
-  {HUMAN_PLAYER_LOWER, HUMAN_PLAYER_HIGHER},
-  {MID_SCORE_LOWER, MID_SCORE_HIGHER},
-	{PICKUP_ANGLE_LOWER, PICKUP_ANGLE_HIGHER}};
+	{PICKUP_ANGLE_LOWER, PICKUP_ANGLE_HIGHER},
+	{MID_SCORE_LOWER, MID_SCORE_HIGHER},
+	{HUMAN_PLAYER_LOWER, HUMAN_PLAYER_HIGHER}};
 
   private:
     ctre::phoenix::motorcontrol::can::TalonSRX m_lowerArmMotorController{ARM_CAN_LOW_NUM};
