@@ -7,10 +7,9 @@
 #include "AHRS.h"
 
 #define GYRO_TICK_N 3
-#define CHARGE_TAXI_TICKS 155
-#define AUTO_SCORE_TICKS 40
-#define AUTO_TAXI_TICKS 115
-#define AUTO_BRAKE_TICKS 120
+#define CHARGE_TAXI_TICKS 150
+#define AUTO_SCORE_TICKS 30
+#define AUTO_TAXI_TICKS 100
 #define BRAKE_TICK_NUM 3
 #define arraySize(a) (sizeof(a)/sizeof(a[0]))
 #define DEFAULT_SLOW_SPEED 0.4;
