@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <frc/Joystick.h>
 #include <frc/AnalogGyro.h>
@@ -48,6 +47,8 @@ class Robot : public frc::TimedRobot
   //AHRS gyro = new AHRS(SerialPort.Port.kMXP);
 
   double currentJoySens = DEFENCE_JOYSTICK_SENSITIVITY;
+  double boost = 0;
+  int pov;
 
   // Drive Motors
   ctre::phoenix::motorcontrol::can::VictorSPX m_leftMotor{15};

@@ -90,13 +90,19 @@ void Robot::AutonomousPeriodic()
 
 void Robot::TeleopPeriodic()
 {
-  //if (m_stick.GetRawButtonPressed(11)){currentJoySens = BALANCE_JOYSTICK_SENSITIVITY;};
-  //if (m_stick.GetRawButtonPressed(12)){currentJoySens = DEFENCE_JOYSTICK_SENSITIVITY;};
+  pov = m_stick.GetPOV();
+  if(pov == 0){
+    boost = BOOST_POWER;
+  }else if (pov == 180){
+    boost = -BOOST_POWER;
+  }else{
+    boost = 0;
+  }
   // Drive with arcade style
   // This is where all our fun stuff goes :)
   // Read the joystick, calculate the drive stuff
   double x = m_stick.GetX()*JOYSTICK_ROT_SENS; // In terms of arcade drive, this is speed
-  double y = m_stick.GetY()*currentJoySens; // In terms of arcade drive, this is turn
+  double y = m_stick.GetY()*DEFENCE_JOYSTICK_SENSITIVITY; // In terms of arcade drive, this is turn
 
   // Drive
   double leftPower = (y - x) / 2;
@@ -106,7 +112,7 @@ void Robot::TeleopPeriodic()
   if (leftPower != lastDriveLeft)
   {
     // Update the LEFT drive
-    m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, leftPower * S_LEFT_DRIVE);
+    m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, leftPower * S_LEFT_DRIVE + boost);
     lastDriveLeft = leftPower;
   }
 
@@ -114,7 +120,7 @@ void Robot::TeleopPeriodic()
   if (rightPower != lastDriveRight)
   {
     // Update the RIGHT drive
-    m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, rightPower * S_RIGHT_DRIVE);
+    m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, rightPower * S_RIGHT_DRIVE + boost);
     lastDriveRight = rightPower;
   }
 

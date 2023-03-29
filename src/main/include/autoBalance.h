@@ -37,9 +37,9 @@ class autoBalance{
     public:
         rollingAverage avgTilt;
         autoBalance(); 
-        double tmpAutoBalanceRoutine(AHRS *g);
+        // double tmpAutoBalanceRoutine(AHRS *g);
         double autoBalanceRoutine(AHRS *g);
-        int secondsToTicks(double time);
+        // int secondsToTicks(double time);
         int getState();
         double climbMode(int direction, double delta);
         bool angleDeltaCheck(int direction, double delta);
@@ -58,18 +58,18 @@ class autoBalance{
     private:
 
         // Gyro functions
-        void tmpTrackAngleDelta(double delta);
-        int getTicksSinceLastEval();
-        void evaluatedData();
-        bool trackedTicksNegative();
-        bool trackedTicksGreaterThan(double magnitude);
-        double avgTrackedTicks();
+        // void tmpTrackAngleDelta(double delta);
+        // int getTicksSinceLastEval();
+        // void evaluatedData();
+        // bool trackedTicksNegative();
+        // bool trackedTicksGreaterThan(double magnitude);
+        // double avgTrackedTicks();
 
         // Tracked gyro values
-        int gyroTicks = 0;
-        float previousTickDeltas[GYRO_TICK_N] = { 0.f };
-        double tmpPreviousTickDeltas[GYRO_TICK_N + 1] = {}; //use proper queue
-        int tmpPreviousTickDeltas_start = 0, tmpPreviousTickDeltas_end = 1, tmpPreviousTickDeltas_counter = 0;
+        // int gyroTicks = 0;
+        // float previousTickDeltas[GYRO_TICK_N] = { 0.f };
+        // double tmpPreviousTickDeltas[GYRO_TICK_N + 1] = {}; //use proper queue
+        // int tmpPreviousTickDeltas_start = 0, tmpPreviousTickDeltas_end = 1, tmpPreviousTickDeltas_counter = 0;
 
         frc::BuiltInAccelerometer mAccel{};
         int debounceCount;
