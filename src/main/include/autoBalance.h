@@ -44,8 +44,8 @@ class autoBalance{
         double climbMode(int direction, double delta);
         bool angleDeltaCheck(int direction, double delta);
         bool autoBalancing = true;
-        bool autoTaxi = false;
-        bool autoScore = false;
+        bool autoTaxi = true;
+        bool autoScore = true;
         int taxiTicks = 0;
         int brakeTicks = 0;
         double currentSpeed = 0;
