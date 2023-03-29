@@ -4,14 +4,14 @@
 #pragma once
 #include <frc/BuiltInAccelerometer.h>
 #include <cmath>
-#include <frc/AnalogGyro.h>
+#include "AHRS.h"
 
 #define GYRO_TICK_N 3
-#define CHARGE_TAXI_TICKS 125
-#define AUTO_SCORE_TICKS 30
-#define AUTO_TAXI_TICKS 110
-#define AUTO_BRAKE_TICKS 113
-#define BRAKE_TICK_NUM 5
+#define CHARGE_TAXI_TICKS 155
+#define AUTO_SCORE_TICKS 40
+#define AUTO_TAXI_TICKS 115
+#define AUTO_BRAKE_TICKS 120
+#define BRAKE_TICK_NUM 3
 #define arraySize(a) (sizeof(a)/sizeof(a[0]))
 #define DEFAULT_SLOW_SPEED 0.4;
 class rollingAverage
@@ -37,23 +37,29 @@ public:
 class autoBalance{
     public:
         rollingAverage avgTilt;
-        autoBalance();
-        double autoBalanceRoutine(frc::AnalogGyro *g);
+        autoBalance(); 
+        double tmpAutoBalanceRoutine(AHRS *g);
+        double autoBalanceRoutine(AHRS *g);
         int secondsToTicks(double time);
         int getState();
-        double climbMode(int direction, double tilt, frc::AnalogGyro *g);
-        bool taxiBalance = false;
-        bool doingBalance = false;
-        bool doAnyAuto = true;
+        double climbMode(int direction, double delta);
+        bool angleDeltaCheck(int direction, double delta);
+        bool autoBalancing = true;
+        bool autoTaxi = false;
+        bool autoScore = false;
         int taxiTicks = 0;
         int brakeTicks = 0;
         double currentSpeed = 0;
+        int state;
+        double* ahrsRollReadouts = new double[2];
+
+        double getAngleDelta(AHRS *g, double roll);
+        void trackAngleDelta(double delta);
 
     private:
 
         // Gyro functions
-        double getAngleDelta(frc::AnalogGyro *g);
-        void trackAngleDelta(double delta);
+        void tmpTrackAngleDelta(double delta);
         int getTicksSinceLastEval();
         void evaluatedData();
         bool trackedTicksNegative();
@@ -63,9 +69,10 @@ class autoBalance{
         // Tracked gyro values
         int gyroTicks = 0;
         float previousTickDeltas[GYRO_TICK_N] = { 0.f };
+        double tmpPreviousTickDeltas[GYRO_TICK_N + 1] = {}; //use proper queue
+        int tmpPreviousTickDeltas_start = 0, tmpPreviousTickDeltas_end = 1, tmpPreviousTickDeltas_counter = 0;
 
         frc::BuiltInAccelerometer mAccel{};
-        int state;
         int debounceCount;
         double robotSpeedSlow;
         double robotSpeedFast;

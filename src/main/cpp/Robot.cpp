@@ -30,12 +30,11 @@ void Robot::RobotInit()
 
   pcmCompressor.EnableDigital();
 
-  g.InitGyro();
-  g.Calibrate();
-  g.SetDeadband(0.05);
+  ahrs = new AHRS(frc::SPI::Port::kMXP);
+  ahrs->Calibrate();
   // Disable Compressor
   // Optional
-  // pcmCompressor.Disable();
+  pcmCompressor.Disable();
 
   // Prints
   std::cout << "Compressor Enabled"
@@ -52,29 +51,36 @@ void Robot::RobotInit()
 }
 
 void Robot::RobotPeriodic() {
-  
   frc::SmartDashboard::PutNumber("Auto State", mAutoBalance.getState());
   frc::SmartDashboard::PutNumber("Lower Encoder Value", m_arm.GetLowerArmAngle());
   frc::SmartDashboard::PutNumber("Higher Encoder Value", m_arm.GetHigherArmAngle());
-  frc::SmartDashboard::PutNumber("Gyro Delta", round(-g.GetRate()*100)/100);
-  frc::SmartDashboard::PutNumber("Gyro Angle", -g.GetAngle());
-  if (m_stick.GetRawButtonPressed(7)){mAutoBalance.taxiBalance = !mAutoBalance.taxiBalance;};
-  if (m_stick.GetRawButtonPressed(8)){mAutoBalance.doingBalance = !mAutoBalance.doingBalance;};
-  if (m_stick.GetRawButtonPressed(9)){mAutoBalance.doAnyAuto = !mAutoBalance.doAnyAuto;};
-  frc::SmartDashboard::PutBoolean("Do Full Auto", mAutoBalance.doingBalance);
-  frc::SmartDashboard::PutBoolean("Do Any Auto", mAutoBalance.doAnyAuto);
-  frc::SmartDashboard::PutBoolean("Do Taxi Balance", mAutoBalance.taxiBalance);
+  //frc::SmartDashboard::PutNumber("Gyro Delta", round(ahrs->GetRate()*100)/100);
+  frc::SmartDashboard::PutNumber("Gyro Pitch", ahrs->GetPitch());
+  frc::SmartDashboard::PutNumber("Gyro Roll", ahrs->GetRoll());
+  if (m_stick.GetRawButtonPressed(7)){mAutoBalance.autoScore = !mAutoBalance.autoScore;};
+  if (m_stick.GetRawButtonPressed(8)){mAutoBalance.autoTaxi = !mAutoBalance.autoTaxi;};
+  if (m_stick.GetRawButtonPressed(9)){mAutoBalance.autoBalancing = !mAutoBalance.autoBalancing;};
+  frc::SmartDashboard::PutBoolean("Auto Score", mAutoBalance.autoScore);
+  frc::SmartDashboard::PutBoolean("Auto Taxi", mAutoBalance.autoTaxi);
+  frc::SmartDashboard::PutBoolean("Auto Balance", mAutoBalance.autoBalancing);
 }
 
 void Robot::AutonomousInit()
 {
-  std::cout << "Entering autonomous mode" << std::endl;
-  std::cout << "Ready to Go" << std::endl;
+  if (mAutoBalance.autoScore) {
+        mAutoBalance.state = 5;
+    }else if (mAutoBalance.autoTaxi) {
+        mAutoBalance.state = 4;
+    }else if (mAutoBalance.autoBalancing) {
+        mAutoBalance.state = 0;
+    }else {
+        mAutoBalance.state = 6;
+    }
 }
 
 void Robot::AutonomousPeriodic()
 {
-  double speed = mAutoBalance.autoBalanceRoutine(&g);
+  double speed = mAutoBalance.autoBalanceRoutine(ahrs);
   mAutoBalance.currentSpeed = speed;
   setDrive(speed, speed);
   frc::SmartDashboard::PutNumber("Speed", speed);

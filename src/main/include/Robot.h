@@ -17,6 +17,8 @@
 #include "autoBalance.h"
 #include "armAngles.h"
 
+#include "AHRS.h"
+
 class Robot : public frc::TimedRobot
 {
 
@@ -42,6 +44,8 @@ class Robot : public frc::TimedRobot
   bool lastRelease = false;
   // Gyroscope
   frc::AnalogGyro g{0};
+  AHRS *ahrs; 
+  //AHRS gyro = new AHRS(SerialPort.Port.kMXP);
 
   double currentJoySens = DEFENCE_JOYSTICK_SENSITIVITY;
 

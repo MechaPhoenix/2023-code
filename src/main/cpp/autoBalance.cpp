@@ -3,6 +3,7 @@
 
 #include "autoBalance.h"
 #include <frc/DataLogManager.h>
+#include <iostream>
 
 autoBalance::autoBalance(){
     state = 0;
@@ -21,11 +22,11 @@ autoBalance::autoBalance(){
     robotSpeedSlow = autoDirection*0.3;
 
     //Angle where the robot knows it is on the charge station, default = 13.0
-    onChargeStationDegree = autoDirection*10.0;
+    onChargeStationDegree = autoDirection*10.5;
 
     //Angle where the robot can assume it is level on the charging station
     //Used for exiting the drive forward sequence as well as for auto balancing, default = 6.0
-    levelDegree = autoDirection*5.0;
+    levelDegree = autoDirection*3.0;
 
     //Amount of time a sensor condition needs to be met before changing states in seconds
     //Reduces the impact of sensor noice, but too high can make the auto run slower, default = 0.2
@@ -51,9 +52,11 @@ int autoBalance::secondsToTicks(double time){
 }
 
 //Let's first define all of our gyro functionality. This should most certainly be in a separate file (class, even) but I'm not dealing with that right now.
-double autoBalance::getAngleDelta(frc::AnalogGyro *g)
+double autoBalance::getAngleDelta(AHRS *g, double roll)
 {
-  return round(-g->GetRate()*100)/100;
+    ahrsRollReadouts[0] = ahrsRollReadouts[1];
+    ahrsRollReadouts[1] = roll;
+    return ahrsRollReadouts[1] - ahrsRollReadouts[0];
 }
 
 void autoBalance::trackAngleDelta(double delta){
@@ -65,6 +68,20 @@ void autoBalance::trackAngleDelta(double delta){
   previousTickDeltas[0] = delta;
   //gyroTicks++;
 }
+
+void autoBalance::tmpTrackAngleDelta(double delta){ // circular queue
+// 
+    tmpPreviousTickDeltas[tmpPreviousTickDeltas_end++] = delta;
+    tmpPreviousTickDeltas_end %= (GYRO_TICK_N+1);
+    if(tmpPreviousTickDeltas_counter < GYRO_TICK_N){
+        tmpPreviousTickDeltas_counter++;
+    }
+    else{
+        tmpPreviousTickDeltas_start++;
+        tmpPreviousTickDeltas_start %= GYRO_TICK_N;
+    }
+}
+
 
 int autoBalance::getTicksSinceLastEval(){
   return gyroTicks;
@@ -108,13 +125,32 @@ double autoBalance::avgTrackedTicks(){
   return tot / GYRO_TICK_N;
 }
 
+
+// testing the new algorithm for autobalancing by Andy Yun
+// this is not yet complete, so DO NOT USE During Competition
+// double autoBalance::tmpAutoBalanceRoutine(frc::AnalogGyro *g){
+//     double roll = -g->GetAngle();
+//     if (!doAnyAuto) {
+//         return 0.0;
+//     }
+//     if (taxiBalance) {
+//         state = 4;
+//     }
+//     if (!doingBalance) {
+//         state = 5;
+//     }
+//     switch(state){ // 0: initial state, 1: climb mode, 2: blancing, 3: reverse climb mode, 4: charge taxi
+//         case 0:
+//     }
+// }
+
 //routine for automatically driving onto and engaging the charge station.
 //returns a value from -1.0 to 1.0, which left and right motors should be set to.
-double autoBalance::autoBalanceRoutine(frc::AnalogGyro *g){
-    double roll = -g->GetAngle();
-    if (!doAnyAuto) { return 0.0; }
-    if (taxiBalance) { state = 4; }
-    if (!doingBalance) { state = 5; }
+double autoBalance::autoBalanceRoutine(AHRS *g){
+    double roll = g->GetRoll();
+    double rollDelta = getAngleDelta(g, roll);
+
+    std::cout<<currentSpeed<<" , "<<roll<<" , "<<state<<std::endl;
 
     switch (state){
         //drive forwards to approach station, exit when tilt is detected
@@ -125,121 +161,76 @@ double autoBalance::autoBalanceRoutine(frc::AnalogGyro *g){
             return robotSpeedFast;
         //driving up charge station, drive slower, stopping when level
         case 1:
-            return climbMode(1, roll, g);
+            if(roll < onChargeStationDegree){
+                state = 2;
+            }
+            return robotSpeedSlow;
         //on charge station, stop motors and wait for end of auto
         case 2:
-            if(brakeTicks<1){
-                brakeTicks++;
-                return -currentSpeed;
-            }else if(brakeTicks<=BRAKE_TICK_NUM){
-                brakeTicks++;
-                return currentSpeed;
-            }
-            
-            if(roll < -onChargeStationDegree){
+            if(roll < -levelDegree){//||angleDeltaCheck(-1)
                 state = 3;
-            }else if(roll > onChargeStationDegree){
+            }else if(roll > levelDegree){//||angleDeltaCheck(1)
                 state = 1;
             }else{
+                // if(brakeTicks<1){
+                //     brakeTicks++;
+                //     return -currentSpeed;
+                //  }else if(brakeTicks<BRAKE_TICK_NUM){
+                //     brakeTicks++;
+                //     return currentSpeed;
+                // }
+
                 return 0;
             }break;
         case 3:
-            return climbMode(-1, roll, g);
+            if(roll > -onChargeStationDegree){
+                state = 2;
+            }
+            return -robotSpeedSlow;
         case 4:
-            if (taxiTicks < CHARGE_TAXI_TICKS) {
+            if (autoBalancing&&taxiTicks < CHARGE_TAXI_TICKS) {
+                taxiTicks++;
+                return -0.6;
+            }else if (taxiTicks < AUTO_TAXI_TICKS) {
                 taxiTicks++;
                 return -0.8;
-            } else {
+            }else if (autoBalancing){
                 state = 0;
+            }else {
+                state = 6;
             }break;
         case 5:
             if (taxiTicks < AUTO_SCORE_TICKS) {
                 taxiTicks++;
-                return -1; 
-            }else if (taxiTicks < AUTO_TAXI_TICKS) {
-                taxiTicks++;
-                return robotSpeedFast;
-            }else if (taxiTicks < AUTO_BRAKE_TICKS) {
-                return -robotSpeedSlow;
-            }
+                return 0.6; 
+            }else if (autoTaxi){
+                state = 4;
+            }else if (autoBalancing){
+                state = 0;
+            }else{
+                state = 6;
+            }break;
+        case 6: return 0.0;
         default: return 0;
     }
     return 0;
 }
 
-double autoBalance::climbMode(int direction, double roll, frc::AnalogGyro *g){
-    trackAngleDelta(getAngleDelta(g));
+double autoBalance::climbMode(int direction, double delta){
+    //trackAngleDelta(getAngleDelta(g));
     //if (getTicksSinceLastEval()>=GYRO_TICK_N){
-    if (avgTrackedTicks() > direction * -1){
+    if(angleDeltaCheck(direction, delta)){
         state = 2;
         brakeTicks = 0;
     }
         //evaluatedData();
     //}
-    return direction*std::max(robotSpeedSlow, 0.25);
+    return direction*robotSpeedSlow;
 }
 
-// Same as auto balance above, but starts auto period by scoring
-// a game piece on the back bumper of the robot
-/*double autoBalance::scoreAndBalance(){
-    switch (state){
-        //drive back, then forwards, then back again to knock off and score game piece
-        case 0:
-            debounceCount++;
-            if(debounceCount < secondsToTicks(singleTapTime)){
-                return -robotSpeedFast;
-            } else if(debounceCount < secondsToTicks(singleTapTime+scoringBackUpTime)){
-                return robotSpeedFast;
-            } else if(debounceCount < secondsToTicks(singleTapTime+scoringBackUpTime+doubleTapTime)){
-                return -robotSpeedFast;
-            } else {
-                debounceCount = 0;
-                state = 1;
-                return 0;
-            }
-        //drive forwards until on charge station
-        case 1:
-            if(getTilt() > onChargeStationDegree){
-                debounceCount++;
-            }
-            if(debounceCount > secondsToTicks(debounceTime)){
-                state = 2;
-                debounceCount = 0;
-                return robotSpeedSlow;
-            }
-            return robotSpeedFast;
-        //driving up charge station, drive slower, stopping when level
-        case 2:
-            if (getTilt() < levelDegree){
-                debounceCount++; 
-            }
-            if(debounceCount > secondsToTicks(debounceTime)){
-                state = 3;
-                debounceCount = 0;
-                return 0;
-            }
-            return robotSpeedSlow;
-        //on charge station, ensure robot is flat, then end auto
-        case 3:
-            if(fabs(getTilt()) <= levelDegree/2){
-                debounceCount++;
-            }
-            if(debounceCount>secondsToTicks(debounceTime)){
-                state = 4;
-                debounceCount = 0;
-                return 0;
-            }
-            if(getTilt() >= levelDegree) {
-                return robotSpeedSlow/2;
-            } else if(getTilt() <= -levelDegree) {
-                return -robotSpeedSlow/2;
-            }
-            break;
-        case 4:
-            return 0;
+bool autoBalance::angleDeltaCheck(int direction, double delta){
+    if (delta > direction * -0.5){
+        return true;
     }
-    return 0;
-}*/
-
-
-
+    return false;
+}
