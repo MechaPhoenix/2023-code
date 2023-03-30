@@ -21,3 +21,5 @@
 #define JOYSTICK_ROT_SENS 0.7
 #define AUTO_SENS 0.9
 #define BOOST_POWER 0.3
+
+#define PEAK_ARM_MOTOR_OUTPUT 0.5

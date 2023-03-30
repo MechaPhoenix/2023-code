@@ -98,7 +98,7 @@ void Robot::TeleopPeriodic()
   }else{
     boost = 0;
   }
-  
+
   // Drive with arcade style
   // This is where all our fun stuff goes :)
   // Read the joystick, calculate the drive stuff
@@ -166,12 +166,12 @@ void Robot::TeleopPeriodic()
   //   }
   //}
 
-  // if (m_stick.GetRawButtonPressed(3)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 0;};
-  // if (m_stick.GetRawButtonPressed(4)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 1;};
-  // if (m_stick.GetRawButtonPressed(5)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 2;};
-  // if (m_stick.GetRawButtonPressed(6)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 3;};
+  if (m_stick.GetRawButtonPressed(3)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 0;};
+  if (m_stick.GetRawButtonPressed(4)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 1;};
+  if (m_stick.GetRawButtonPressed(5)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 2;};
+  if (m_stick.GetRawButtonPressed(6)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 3;};
 
-  // m_arm.ArmPeriodic();
+  m_arm.ArmPeriodic();
 }
 
 // Drive Doubles

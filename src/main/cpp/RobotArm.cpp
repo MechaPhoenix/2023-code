@@ -12,12 +12,12 @@ constexpr int kCountsPerDegree = 4096 / 360;
  RobotArm::RobotArm()
   {
     //for the love of god dont set Lower PID/P over 2
-    frc::SmartDashboard::PutNumber("Lower PID/P", 0.95);
-    frc::SmartDashboard::PutNumber("Lower PID/I", 0.0);
+    frc::SmartDashboard::PutNumber("Lower PID/P", 0.75);
+    frc::SmartDashboard::PutNumber("Lower PID/I", 0.000);
     frc::SmartDashboard::PutNumber("Lower PID/D", 0);
-    frc::SmartDashboard::PutNumber("Higher PID/P", 1);
-    frc::SmartDashboard::PutNumber("Higher PID/I", 0.0);
-    frc::SmartDashboard::PutNumber("Higher PID/D", 0);
+    frc::SmartDashboard::PutNumber("Higher PID/P", 1.35);
+    frc::SmartDashboard::PutNumber("Higher PID/I", 0.000);
+    frc::SmartDashboard::PutNumber("Higher PID/D", 0.0);
 
 	armState = 0;
 	oldArmState = 0;
@@ -46,14 +46,15 @@ void RobotArm::LoadParameters() {
 		/* set the peak and nominal outputs, 12V means full */
 		m_lowerArmMotorController.ConfigNominalOutputForward(0, kTimeoutMs);
 		m_lowerArmMotorController.ConfigNominalOutputReverse(0, kTimeoutMs);
-		m_lowerArmMotorController.ConfigPeakOutputForward(1, kTimeoutMs);
-		m_lowerArmMotorController.ConfigPeakOutputReverse(-1, kTimeoutMs);
+		m_lowerArmMotorController.ConfigPeakOutputForward(PEAK_ARM_MOTOR_OUTPUT, kTimeoutMs);
+		m_lowerArmMotorController.ConfigPeakOutputReverse(-PEAK_ARM_MOTOR_OUTPUT, kTimeoutMs);
 
 		/* set closed loop gains in slot0 */
 		//m_lowerArmMotorController.Config_kF(kPIDLoopIdx, 0.0, kTimeoutMs);
 		m_lowerArmMotorController.Config_kP(kPIDLoopIdx, frc::SmartDashboard::GetNumber("Lower PID/P", 0.0), kTimeoutMs);
 		m_lowerArmMotorController.Config_kI(kPIDLoopIdx, frc::SmartDashboard::GetNumber("Lower PID/I", 0.0), kTimeoutMs);
 		m_lowerArmMotorController.Config_kD(kPIDLoopIdx, frc::SmartDashboard::GetNumber("Lower PID/D", 0.0), kTimeoutMs);
+		m_lowerArmMotorController.Config_kF(kPIDLoopIdx, -0.025, kTimeoutMs);
 
         m_higherArmMotorController.ConfigFactoryDefault();
 
@@ -77,15 +78,15 @@ void RobotArm::LoadParameters() {
 		/* set the peak and nominal outputs, 12V means full */
 		m_higherArmMotorController.ConfigNominalOutputForward(0, kTimeoutMs);
 		m_higherArmMotorController.ConfigNominalOutputReverse(0, kTimeoutMs);
-		m_higherArmMotorController.ConfigPeakOutputForward(1, kTimeoutMs);
-		m_higherArmMotorController.ConfigPeakOutputReverse(-1, kTimeoutMs);
+		m_higherArmMotorController.ConfigPeakOutputForward(PEAK_ARM_MOTOR_OUTPUT, kTimeoutMs);
+		m_higherArmMotorController.ConfigPeakOutputReverse(-PEAK_ARM_MOTOR_OUTPUT, kTimeoutMs);
 
 		/* set closed loop gains in slot0 */
 		//m_lowerArmMotorController.Config_kF(kPIDLoopIdx, 0.0, kTimeoutMs);
 		m_higherArmMotorController.Config_kP(kPIDLoopIdx, frc::SmartDashboard::GetNumber("Higher PID/P", 0.0), kTimeoutMs);
 		m_higherArmMotorController.Config_kI(kPIDLoopIdx, frc::SmartDashboard::GetNumber("Higher PID/I", 0.0), kTimeoutMs);
 		m_higherArmMotorController.Config_kD(kPIDLoopIdx, frc::SmartDashboard::GetNumber("Higher PID/D", 0.0), kTimeoutMs);
-		m_higherArmMotorController.Config_kF(kPIDLoopIdx, 0.01, kTimeoutMs);
+		m_higherArmMotorController.Config_kF(kPIDLoopIdx, 0.025, kTimeoutMs);
 	}
 
   void RobotArm::ArmPeriodic() {
@@ -132,7 +133,7 @@ void RobotArm::LoadParameters() {
   }
 
   void RobotArm::SetHigherArmAngle(double angle){
-    angle = std::max(-160.0, std::min(0.0, angle));
+    angle = std::max(-125.0, std::min(0.0, angle));
     m_higherArmMotorController.Set(ControlMode::Position, angle*kCountsPerDegree);
   }
 
