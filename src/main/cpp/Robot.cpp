@@ -91,13 +91,14 @@ void Robot::AutonomousPeriodic()
 void Robot::TeleopPeriodic()
 {
   pov = m_stick.GetPOV();
-  if(pov == 0){
+  if(pov == 180){
     boost = BOOST_POWER;
-  }else if (pov == 180){
+  }else if (pov == 0){
     boost = -BOOST_POWER;
   }else{
     boost = 0;
   }
+  
   // Drive with arcade style
   // This is where all our fun stuff goes :)
   // Read the joystick, calculate the drive stuff

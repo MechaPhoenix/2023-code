@@ -7,7 +7,7 @@
 #include "AHRS.h"
 
 #define GYRO_TICK_N 3
-#define CHARGE_TAXI_TICKS 150
+#define CHARGE_TAXI_TICKS 145
 #define AUTO_SCORE_TICKS 30
 #define AUTO_TAXI_TICKS 100
 #define BRAKE_TICK_NUM 3
