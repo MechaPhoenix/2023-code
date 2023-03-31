@@ -62,6 +62,7 @@ void Robot::RobotPeriodic() {
   frc::SmartDashboard::PutBoolean("Auto Score", mAutoBalance.autoScore);
   frc::SmartDashboard::PutBoolean("Auto Taxi", mAutoBalance.autoTaxi);
   frc::SmartDashboard::PutBoolean("Auto Balance", mAutoBalance.autoBalancing);
+	frc::SmartDashboard::PutNumber("Highter Arm Command Position", m_arm.angles[m_arm.armState][1]);
 }
 
 void Robot::AutonomousInit()
@@ -85,6 +86,7 @@ void Robot::AutonomousPeriodic()
   frc::SmartDashboard::PutNumber("Speed", speed);
   m_arm.SetHigherArmAngle(0);
   m_arm.SetLowerArmAngle(0);
+  m_arm.feedForward = 0.1;
 }
 
 void Robot::TeleopPeriodic()
@@ -167,17 +169,27 @@ void Robot::TeleopPeriodic()
 
   if (m_stick.GetRawButtonPressed(3)){
     m_arm.armState = 0;
+    m_arm.feedForward = 0.1;
     m_arm.ResetArms();
+    m_arm.feedForward = 0.0;
   }
   if (m_stick.GetRawButtonPressed(4)){
-    m_arm.SetLowerArmAngle(LOW_ARM_FIXED_POS);
+    m_arm.SetLowerArmAngle(LOW_ARM_FULL_DEPLOY);
     m_arm.armState = 1;
     m_arm.feedForward = m_arm.FeedForwardCalc();
+    m_arm.currentState = frc::TrapezoidProfile<units::degree>::State {
+      units::degree_t(m_arm.GetHigherArmAngle()),
+      units::degrees_per_second_t(0)
+    };
   }
   if (m_stick.GetRawButtonPressed(5)){
     m_arm.SetLowerArmAngle(LOW_ARM_FIXED_POS);
     m_arm.armState = 2;
     m_arm.feedForward = m_arm.FeedForwardCalc();
+    m_arm.currentState = frc::TrapezoidProfile<units::degree>::State {
+      units::degree_t(m_arm.GetHigherArmAngle()),
+      units::degrees_per_second_t(0)
+    };
   }
 
   m_arm.ArmPeriodic();

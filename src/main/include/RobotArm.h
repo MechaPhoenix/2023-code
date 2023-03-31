@@ -10,6 +10,8 @@
 #include <ctre/phoenix/motorcontrol/can/VictorSPX.h>
 #include <ctre/phoenix/motorcontrol/can/TalonSRX.h>
 #include <frc/trajectory/TrapezoidProfile.h>
+#include <units/angular_acceleration.h>
+#include <units/angular_velocity.h>
 #include <iostream>
 
 class RobotArm {
@@ -26,11 +28,10 @@ class RobotArm {
   bool inRange(double low, double high, double x);
   int armState;
   double feedForward;
-  frc::TrapezoidProfile<units::degrees>::Constraints constraints{(units::degree_t)(1), 1};
-  frc::TrapezoidProfile<units::degrees>::State homeState{HOME_ANGLE_HIGHER_degrees, 0};
-  frc::TrapezoidProfile<units::degrees>::State humanState{HUMAN_PLAYER_HIGHER_degrees, 0};
-  frc::TrapezoidProfile<units::degrees>::State scoreState{MID_SCORE_HIGHER_degrees, 0};
-  frc::TrapezoidProfile<units::degrees>::
+  frc::TrapezoidProfile<units::degrees>::Constraints constraints{units::degrees_per_second_t(90),//
+  units::degrees_per_second_squared_t(90)};//acceleration
+  frc::TrapezoidProfile<units::degrees>::State currentState{units::degree_t(0), units::degrees_per_second_t(0)};
+
   
   double angles[3][2] = {{HOME_ANGLE_LOWER, HOME_ANGLE_HIGHER},
   {HUMAN_PLAYER_LOWER, HUMAN_PLAYER_HIGHER},

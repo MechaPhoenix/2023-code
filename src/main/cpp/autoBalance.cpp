@@ -19,7 +19,7 @@ autoBalance::autoBalance(){
     
     //Speed the robot drives while balancing itself on the charge station.
     //Should be roughly half the fast speed, to make the robot more accurate, default = 0.2
-    robotSpeedSlow = autoDirection*0.305;
+    robotSpeedSlow = autoDirection*0.29;
 
     //Angle where the robot knows it is on the charge station, default = 13.0
     onChargeStationDegree = autoDirection*10.5;
@@ -112,7 +112,8 @@ double autoBalance::autoBalanceRoutine(AHRS *g){
         case 5:
             if (taxiTicks < AUTO_SCORE_TICKS) {
                 taxiTicks++;
-                return 0.6; 
+                std::cout<<"FUCK"<<std::endl;
+                return 0.6;
             }else if (autoTaxi){
                 taxiTicks = 0;
                 state = 4;
