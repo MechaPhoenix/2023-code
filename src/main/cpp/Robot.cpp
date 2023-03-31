@@ -54,7 +54,6 @@ void Robot::RobotPeriodic() {
   frc::SmartDashboard::PutNumber("Auto State", mAutoBalance.getState());
   frc::SmartDashboard::PutNumber("Lower Encoder Value", m_arm.GetLowerArmAngle());
   frc::SmartDashboard::PutNumber("Higher Encoder Value", m_arm.GetHigherArmAngle());
-  //frc::SmartDashboard::PutNumber("Gyro Delta", round(ahrs->GetRate()*100)/100);
   frc::SmartDashboard::PutNumber("Gyro Pitch", ahrs->GetPitch());
   frc::SmartDashboard::PutNumber("Gyro Roll", ahrs->GetRoll());
   if (m_stick.GetRawButtonPressed(7)){mAutoBalance.autoScore = !mAutoBalance.autoScore;};
@@ -166,10 +165,20 @@ void Robot::TeleopPeriodic()
   //   }
   //}
 
-  if (m_stick.GetRawButtonPressed(3)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 0;};
-  if (m_stick.GetRawButtonPressed(4)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 1;};
-  if (m_stick.GetRawButtonPressed(5)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 2;};
-  if (m_stick.GetRawButtonPressed(6)){m_arm.oldArmState = m_arm.armState; m_arm.armState = 3;};
+  if (m_stick.GetRawButtonPressed(3)){
+    m_arm.armState = 0;
+    m_arm.ResetArms();
+  }
+  if (m_stick.GetRawButtonPressed(4)){
+    m_arm.SetLowerArmAngle(LOW_ARM_FIXED_POS);
+    m_arm.armState = 1;
+    m_arm.feedForward = m_arm.FeedForwardCalc();
+  }
+  if (m_stick.GetRawButtonPressed(5)){
+    m_arm.SetLowerArmAngle(LOW_ARM_FIXED_POS);
+    m_arm.armState = 2;
+    m_arm.feedForward = m_arm.FeedForwardCalc();
+  }
 
   m_arm.ArmPeriodic();
 }
