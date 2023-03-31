@@ -15,7 +15,7 @@ constexpr double kCountsPerDegree = 4096.0 / 360;
     frc::SmartDashboard::PutNumber("Lower PID/P", 0.7);
     frc::SmartDashboard::PutNumber("Lower PID/I", 0.000);
     frc::SmartDashboard::PutNumber("Lower PID/D", 0);
-    frc::SmartDashboard::PutNumber("Higher PID/P", 0.7/*was 1.5 and working*/); // speed of upper arm
+    frc::SmartDashboard::PutNumber("Higher PID/P", 1.2/*was 1.5 and working*/); // speed of upper arm
     frc::SmartDashboard::PutNumber("Higher PID/I", 0.000);
     frc::SmartDashboard::PutNumber("Higher PID/D", 0.0);
 
@@ -85,22 +85,18 @@ void RobotArm::LoadParameters() {
 	}
 
   void RobotArm::ArmPeriodic() {
-	if (armState!=0){
-		frc::TrapezoidProfile<units::degree> highArmProfile{
-			constraints,
-			frc::TrapezoidProfile<units::degree>::State{
-				units::degree_t(angles[armState][1]),
-				units::degrees_per_second_t(0)
-			},
+	frc::TrapezoidProfile<units::degree> highArmProfile{
+		constraints,
+		frc::TrapezoidProfile<units::degree>::State{
+			units::degree_t(angles[armState][1]),
+			units::degrees_per_second_t(0)
+		},
 			currentState
-		};
+	};
 
 		currentState = highArmProfile.Calculate(20_ms);
 
 		SetHigherArmAngle(currentState.position.value());
-	}else{
-		ResetArms();
-	}
   }
 
   double RobotArm::FeedForwardCalc(){

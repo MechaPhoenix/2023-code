@@ -34,7 +34,7 @@ void Robot::RobotInit()
   ahrs->Calibrate();
   // Disable Compressor
   // Optional
-  pcmCompressor.Disable();
+  //pcmCompressor.Disable();
 
   // Prints
   std::cout << "Compressor Enabled"
@@ -87,6 +87,7 @@ void Robot::AutonomousPeriodic()
   m_arm.SetHigherArmAngle(0);
   m_arm.SetLowerArmAngle(0);
   m_arm.feedForward = 0.1;
+  m_arm.ArmPeriodic();
 }
 
 void Robot::TeleopPeriodic()
@@ -168,10 +169,13 @@ void Robot::TeleopPeriodic()
   //}
 
   if (m_stick.GetRawButtonPressed(3)){
+    m_arm.SetLowerArmAngle(0);
     m_arm.armState = 0;
-    m_arm.feedForward = 0.1;
-    m_arm.ResetArms();
-    m_arm.feedForward = 0.0;
+    m_arm.feedForward = m_arm.FeedForwardCalc();
+    m_arm.currentState = frc::TrapezoidProfile<units::degree>::State {
+      units::degree_t(m_arm.GetHigherArmAngle()),
+      units::degrees_per_second_t(0)
+    };
   }
   if (m_stick.GetRawButtonPressed(4)){
     m_arm.SetLowerArmAngle(LOW_ARM_FULL_DEPLOY);
@@ -183,7 +187,7 @@ void Robot::TeleopPeriodic()
     };
   }
   if (m_stick.GetRawButtonPressed(5)){
-    m_arm.SetLowerArmAngle(LOW_ARM_FIXED_POS);
+    m_arm.SetLowerArmAngle(LOW_ARM_FULL_DEPLOY);
     m_arm.armState = 2;
     m_arm.feedForward = m_arm.FeedForwardCalc();
     m_arm.currentState = frc::TrapezoidProfile<units::degree>::State {

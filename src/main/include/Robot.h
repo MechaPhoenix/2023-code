@@ -30,7 +30,7 @@ class Robot : public frc::TimedRobot
     void TeleopPeriodic() override;
 
   // JoyStick
-  frc::Joystick m_stick{1};
+  frc::Joystick m_stick{0};
   // Motor Doubles
   double lastDriveRight{0};
   double lastDriveLeft{0};
