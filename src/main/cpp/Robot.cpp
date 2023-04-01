@@ -178,7 +178,6 @@ void Robot::TeleopPeriodic()
   //}
 
   if (m_stick.GetRawButtonPressed(3)){
-    m_arm.SetLowerArmAngle(0);
     m_arm.armState = 0;
     m_arm.feedForward = m_arm.FeedForwardCalc();
     m_arm.currentState = frc::TrapezoidProfile<units::degree>::State {
@@ -187,7 +186,6 @@ void Robot::TeleopPeriodic()
     };
   }
   if (m_stick.GetRawButtonPressed(4)){
-    m_arm.SetLowerArmAngle(LOW_ARM_FULL_DEPLOY);
     m_arm.armState = 1;
     m_arm.feedForward = m_arm.FeedForwardCalc();
     m_arm.currentState = frc::TrapezoidProfile<units::degree>::State {
@@ -196,7 +194,6 @@ void Robot::TeleopPeriodic()
     };
   }
   if (m_stick.GetRawButtonPressed(5)){
-    m_arm.SetLowerArmAngle(LOW_ARM_FULL_DEPLOY);
     m_arm.armState = 2;
     m_arm.feedForward = m_arm.FeedForwardCalc();
     m_arm.currentState = frc::TrapezoidProfile<units::degree>::State {

@@ -97,6 +97,10 @@ void RobotArm::LoadParameters() {
 		currentState = highArmProfile.Calculate(20_ms);
 
 		SetHigherArmAngle(currentState.position.value());
+
+		if(inRange(angles[armState][1]-100, angles[armState][1]+100, currentState.position.value())){
+			SetLowerArmAngle(angles[armState][0]);
+  		}
   }
 
   double RobotArm::FeedForwardCalc(){
@@ -120,14 +124,6 @@ void RobotArm::LoadParameters() {
     angle = (std::max(-180.0, std::min(0.0, angle)))*kCountsPerDegree;
 	std::cout<<"angle: "<<angle<<std::endl;
     m_higherArmMotorController.Set(ControlMode::Position, angle, DemandType_ArbitraryFeedForward, feedForward);
-  }
-
-  void RobotArm::ResetArms(){
-	if (!(inRange(angles[armState][0]-2, angles[armState][0]+2 ,GetLowerArmAngle()))){
-		SetLowerArmAngle(angles[armState][0]);
-	}else if (!(inRange(angles[armState][1]-2, angles[armState][1]+2 ,GetHigherArmAngle()))){
-		SetHigherArmAngle(angles[armState][1]);
-	}
   }
 
   bool RobotArm::inRange(double low, double high, double x){

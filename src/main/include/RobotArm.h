@@ -23,7 +23,6 @@ class RobotArm {
   double GetHigherArmAngle();
   void SetLowerArmAngle(double angle);
   void SetHigherArmAngle(double angle);
-  void ResetArms();
   double FeedForwardCalc();
   bool inRange(double low, double high, double x);
   int armState;
