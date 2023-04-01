@@ -110,10 +110,6 @@ void RobotArm::LoadParameters() {
 	currentLowerState = lowArmProfile.Calculate(20_ms);
 
 	SetLowerArmAngle(currentLowerState.position.value());
-
-	// if(inRange(angles[armState][1]-100, angles[armState][1]+100, currentState.position.value())){
-	// 	SetLowerArmAngle(angles[armState][0]);
-  	// }
   }
   
   void RobotArm::setNewArmPos(int stateUpdate){

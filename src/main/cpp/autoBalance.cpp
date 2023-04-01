@@ -15,18 +15,18 @@ autoBalance::autoBalance(){
     autoDirection = 1;
 
     //Speed the robot drived while scoring/approaching station, default = 0.4
-    robotSpeedFast = autoDirection*0.5;
+    robotSpeedFast = autoDirection*0.515;
     
     //Speed the robot drives while balancing itself on the charge station.
     //Should be roughly half the fast speed, to make the robot more accurate, default = 0.2
-    robotSpeedSlow = autoDirection*0.275;
+    robotSpeedSlow = autoDirection*0.27;
 
     //Angle where the robot knows it is on the charge station, default = 13.0
-    onChargeStationDegree = autoDirection*10.5;
+    onChargeStationDegree = autoDirection*11.5;
 
     //Angle where the robot can assume it is level on the charging station
     //Used for exiting the drive forward sequence as well as for auto balancing, default = 6.0
-    levelDegree = autoDirection*3.0;
+    levelDegree = autoDirection*2.2;
 
     //Amount of time a sensor condition needs to be met before changing states in seconds
     //Reduces the impact of sensor noice, but too high can make the auto run slower, default = 0.2
@@ -100,7 +100,11 @@ double autoBalance::autoBalanceRoutine(AHRS *g){
         case 4:
             if (autoBalancing&&taxiTicks < CHARGE_TAXI_TICKS) {
                 taxiTicks++;
-                return -0.6;
+                if (taxiTicks < CHARGE_TAXI_TICKS-8){
+                    return -0.6;
+                }else{
+                    return 0.0;
+                }
             }else if (taxiTicks < AUTO_TAXI_TICKS) {
                 taxiTicks++;
                 return -0.6;

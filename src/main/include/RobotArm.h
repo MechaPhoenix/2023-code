@@ -33,7 +33,7 @@ class RobotArm {
   frc::TrapezoidProfile<units::degrees>::State currentState{units::degree_t(0), units::degrees_per_second_t(0)};
 
   frc::TrapezoidProfile<units::degrees>::Constraints lowerConstraints{units::degrees_per_second_t(80),//
-  units::degrees_per_second_squared_t(80)};
+  units::degrees_per_second_squared_t(85)};
   frc::TrapezoidProfile<units::degrees>::State currentLowerState{units::degree_t(0), units::degrees_per_second_t(0)};
 
   

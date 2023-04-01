@@ -23,13 +23,18 @@ void Robot::RobotInit()
 
   
   // Creates UsbCamera and MjpegServer [1] and connects them
-  frc::CameraServer::StartAutomaticCapture();
+  cs::UsbCamera armCam = frc::CameraServer::StartAutomaticCapture(0);
+  //cs::UsbCamera chassisCam = frc::CameraServer::StartAutomaticCapture(1);
 
   // Creates the CvSink and connects it to the UsbCamera
   cs::CvSink cvSink = frc::CameraServer::GetVideo();
 
   // Creates the CvSource and MjpegServer [2] and connects them
-  cs::CvSource outputStream = frc::CameraServer::PutVideo("Blur", 1280, 720);
+  cs::CvSource outputStream = frc::CameraServer::PutVideo("Arm", 1280, 720);
+  // cs::CvSource outputStream = frc::CameraServer::PutVideo("Chassis", 1280, 720);
+
+  // frc::CameraServer::AddSwitchedCamera("Arm");
+  // frc::CameraServer::AddSwitchedCamera("Chassis");
 
   // Set some follow stuff
   m_rightMotor2.Follow(m_rightMotor);
@@ -60,18 +65,17 @@ void Robot::RobotInit()
 }
 
 void Robot::RobotPeriodic() {
-  frc::SmartDashboard::PutNumber("Auto State", mAutoBalance.getState());
-  frc::SmartDashboard::PutNumber("Lower Encoder Value", m_arm.GetLowerArmAngle());
-  frc::SmartDashboard::PutNumber("Higher Encoder Value", m_arm.GetHigherArmAngle());
-  frc::SmartDashboard::PutNumber("Gyro Pitch", ahrs->GetPitch());
-  frc::SmartDashboard::PutNumber("Gyro Roll", ahrs->GetRoll());
+  frc::SmartDashboard::PutNumber("State", mAutoBalance.getState());
+  frc::SmartDashboard::PutNumber("Lower EV", m_arm.GetLowerArmAngle());
+  frc::SmartDashboard::PutNumber("Higher EV", m_arm.GetHigherArmAngle());
+  frc::SmartDashboard::PutNumber("Pitch", ahrs->GetPitch());
   if (m_stick.GetRawButtonPressed(7)){mAutoBalance.autoScore = !mAutoBalance.autoScore;};
   if (m_stick.GetRawButtonPressed(8)){mAutoBalance.autoTaxi = !mAutoBalance.autoTaxi;};
   if (m_stick.GetRawButtonPressed(9)){mAutoBalance.autoBalancing = !mAutoBalance.autoBalancing;};
-  frc::SmartDashboard::PutBoolean("Auto Score", mAutoBalance.autoScore);
-  frc::SmartDashboard::PutBoolean("Auto Taxi", mAutoBalance.autoTaxi);
-  frc::SmartDashboard::PutBoolean("Auto Balance", mAutoBalance.autoBalancing);
-	frc::SmartDashboard::PutNumber("Highter Arm Command Position", m_arm.angles[m_arm.armState][1]);
+  frc::SmartDashboard::PutBoolean("Score", mAutoBalance.autoScore);
+  frc::SmartDashboard::PutBoolean("Taxi", mAutoBalance.autoTaxi);
+  frc::SmartDashboard::PutBoolean("Balance", mAutoBalance.autoBalancing);
+	frc::SmartDashboard::PutNumber("Command Position", m_arm.angles[m_arm.armState][1]);
 }
 
 void Robot::AutonomousInit()
