@@ -91,16 +91,43 @@ void RobotArm::LoadParameters() {
 			units::degree_t(angles[armState][1]),
 			units::degrees_per_second_t(0)
 		},
-			currentState
+		currentState
 	};
 
-		currentState = highArmProfile.Calculate(20_ms);
+	currentState = highArmProfile.Calculate(20_ms);
 
-		SetHigherArmAngle(currentState.position.value());
+	SetHigherArmAngle(currentState.position.value());
 
-		if(inRange(angles[armState][1]-100, angles[armState][1]+100, currentState.position.value())){
-			SetLowerArmAngle(angles[armState][0]);
-  		}
+	frc::TrapezoidProfile<units::degree> lowArmProfile{
+		lowerConstraints,
+		frc::TrapezoidProfile<units::degree>::State{
+			units::degree_t(angles[armState][0]),
+			units::degrees_per_second_t(0)
+		},
+		currentLowerState
+	};
+
+	currentLowerState = lowArmProfile.Calculate(20_ms);
+
+	SetLowerArmAngle(currentLowerState.position.value());
+
+	// if(inRange(angles[armState][1]-100, angles[armState][1]+100, currentState.position.value())){
+	// 	SetLowerArmAngle(angles[armState][0]);
+  	// }
+  }
+  
+  void RobotArm::setNewArmPos(int stateUpdate){
+	armState = stateUpdate;
+	feedForward = FeedForwardCalc();
+    currentState = frc::TrapezoidProfile<units::degree>::State {
+      units::degree_t(GetHigherArmAngle()),
+      units::degrees_per_second_t(0)
+    };
+
+	currentLowerState = frc::TrapezoidProfile<units::degree>::State {
+      units::degree_t(GetLowerArmAngle()),
+      units::degrees_per_second_t(0)
+    };
   }
 
   double RobotArm::FeedForwardCalc(){

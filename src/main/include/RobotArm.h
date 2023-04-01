@@ -25,16 +25,22 @@ class RobotArm {
   void SetHigherArmAngle(double angle);
   double FeedForwardCalc();
   bool inRange(double low, double high, double x);
+  void setNewArmPos(int stateUpdate);
   int armState;
   double feedForward;
-  frc::TrapezoidProfile<units::degrees>::Constraints constraints{units::degrees_per_second_t(90),//
+  frc::TrapezoidProfile<units::degrees>::Constraints constraints{units::degrees_per_second_t(105),//
   units::degrees_per_second_squared_t(90)};//acceleration
   frc::TrapezoidProfile<units::degrees>::State currentState{units::degree_t(0), units::degrees_per_second_t(0)};
 
+  frc::TrapezoidProfile<units::degrees>::Constraints lowerConstraints{units::degrees_per_second_t(80),//
+  units::degrees_per_second_squared_t(80)};
+  frc::TrapezoidProfile<units::degrees>::State currentLowerState{units::degree_t(0), units::degrees_per_second_t(0)};
+
   
-  double angles[3][2] = {{HOME_ANGLE_LOWER, HOME_ANGLE_HIGHER},
+  double angles[4][2] = {{HOME_ANGLE_LOWER, HOME_ANGLE_HIGHER},
   {HUMAN_PLAYER_LOWER, HUMAN_PLAYER_HIGHER},
-  {MID_SCORE_LOWER, MID_SCORE_HIGHER}};
+  {MID_SCORE_LOWER, MID_SCORE_HIGHER},
+  {LOW_SCORE_LOWER, LOW_SCORE_HIGHER}};
 
 
 
