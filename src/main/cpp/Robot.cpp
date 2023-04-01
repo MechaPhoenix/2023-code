@@ -4,6 +4,7 @@
 
 using namespace std;
 #include "Robot.h"
+#include "cameraserver/CameraServer.h"
 
 void Robot::setDrive(double left, double right)
 {
@@ -19,6 +20,17 @@ void Robot::RobotInit()
   // m_rightMotor.SetInverted(true);
   // m_rightMotor2.SetInverted(true);
 
+
+  
+  // Creates UsbCamera and MjpegServer [1] and connects them
+  frc::CameraServer::StartAutomaticCapture();
+
+  // Creates the CvSink and connects it to the UsbCamera
+  cs::CvSink cvSink = frc::CameraServer::GetVideo();
+
+  // Creates the CvSource and MjpegServer [2] and connects them
+  cs::CvSource outputStream = frc::CameraServer::PutVideo("Blur", 1280, 720);
+
   // Set some follow stuff
   m_rightMotor2.Follow(m_rightMotor);
   m_leftMotor2.Follow(m_leftMotor);
@@ -32,9 +44,6 @@ void Robot::RobotInit()
 
   ahrs = new AHRS(frc::SPI::Port::kMXP);
   ahrs->Calibrate();
-  // Disable Compressor
-  // Optional
-  //pcmCompressor.Disable();
 
   // Prints
   std::cout << "Compressor Enabled"
