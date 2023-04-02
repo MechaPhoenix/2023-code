@@ -22,6 +22,9 @@ constexpr double kCountsPerDegree = 4096.0 / 360;
 	armState = 0;
 
 	LoadParameters();
+
+	m_lowerArmMotorController.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+	m_higherArmMotorController.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
   }
 
 void RobotArm::LoadParameters() {

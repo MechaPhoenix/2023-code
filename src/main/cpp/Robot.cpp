@@ -19,22 +19,18 @@ void Robot::RobotInit()
   // gearbox is constructed, you might have to invert the left side instead.
   // m_rightMotor.SetInverted(true);
   // m_rightMotor2.SetInverted(true);
-
-
   
   // Creates UsbCamera and MjpegServer [1] and connects them
-  cs::UsbCamera armCam = frc::CameraServer::StartAutomaticCapture(0);
-  //cs::UsbCamera chassisCam = frc::CameraServer::StartAutomaticCapture(1);
+  cs::UsbCamera armCam = frc::CameraServer::StartAutomaticCapture("arm", 0);
+  cs::UsbCamera chsasisCam = frc::CameraServer::StartAutomaticCapture("chassis", 1);
 
   // Creates the CvSink and connects it to the UsbCamera
-  cs::CvSink cvSink = frc::CameraServer::GetVideo();
+  cs::CvSink cvSinkArm = frc::CameraServer::GetVideo("arm");
+  cs::CvSink cvSinkChassis = frc::CameraServer::GetVideo("chassis");
 
   // Creates the CvSource and MjpegServer [2] and connects them
-  cs::CvSource outputStream = frc::CameraServer::PutVideo("Arm", 1280, 720);
-  // cs::CvSource outputStream = frc::CameraServer::PutVideo("Chassis", 1280, 720);
-
-  // frc::CameraServer::AddSwitchedCamera("Arm");
-  // frc::CameraServer::AddSwitchedCamera("Chassis");
+  cs::CvSource outputStreamArm = frc::CameraServer::PutVideo("Arm", 1280, 720);
+  cs::CvSource outputStreamArm = frc::CameraServer::PutVideo("Chassis", 1280, 720);
 
   // Set some follow stuff
   m_rightMotor2.Follow(m_rightMotor);
@@ -46,6 +42,7 @@ void Robot::RobotInit()
   m_leftMotor2.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 
   pcmCompressor.EnableDigital();
+  pcmCompressor.Disable();
 
   ahrs = new AHRS(frc::SPI::Port::kMXP);
   ahrs->Calibrate();
@@ -80,6 +77,7 @@ void Robot::RobotPeriodic() {
 
 void Robot::AutonomousInit()
 {
+  m_arm.armState = 0;
   if (mAutoBalance.autoScore) {
         mAutoBalance.state = 5;
     }else if (mAutoBalance.autoTaxi) {
@@ -96,7 +94,6 @@ void Robot::AutonomousPeriodic()
   double speed = mAutoBalance.autoBalanceRoutine(ahrs);
   mAutoBalance.currentSpeed = speed;
   setDrive(speed, speed);
-  frc::SmartDashboard::PutNumber("Speed", speed);
   m_arm.SetHigherArmAngle(0);
   m_arm.SetLowerArmAngle(0);
   m_arm.feedForward = 0.1;

@@ -100,7 +100,7 @@ double autoBalance::autoBalanceRoutine(AHRS *g){
         case 4:
             if (autoBalancing&&taxiTicks < CHARGE_TAXI_TICKS) {
                 taxiTicks++;
-                if (taxiTicks < CHARGE_TAXI_TICKS-8){
+                if (taxiTicks < CHARGE_TAXI_TICKS-10){
                     return -0.6;
                 }else{
                     return 0.0;
