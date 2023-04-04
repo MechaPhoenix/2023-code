@@ -42,7 +42,6 @@ void Robot::RobotInit()
   m_leftMotor2.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
 
   pcmCompressor.EnableDigital();
-  pcmCompressor.Disable();
 
   ahrs = new AHRS(frc::SPI::Port::kMXP);
   ahrs->Calibrate();
@@ -66,10 +65,12 @@ void Robot::RobotPeriodic() {
   frc::SmartDashboard::PutNumber("Lower EV", m_arm.GetLowerArmAngle());
   frc::SmartDashboard::PutNumber("Higher EV", m_arm.GetHigherArmAngle());
   frc::SmartDashboard::PutNumber("Pitch", ahrs->GetPitch());
-  if (m_stick.GetRawButtonPressed(7)){mAutoBalance.autoScore = !mAutoBalance.autoScore;};
-  if (m_stick.GetRawButtonPressed(8)){mAutoBalance.autoTaxi = !mAutoBalance.autoTaxi;};
-  if (m_stick.GetRawButtonPressed(9)){mAutoBalance.autoBalancing = !mAutoBalance.autoBalancing;};
-  frc::SmartDashboard::PutBoolean("Score", mAutoBalance.autoScore);
+  if (m_stick.GetRawButtonPressed(7)){mAutoBalance.lowAuto = !mAutoBalance.lowAuto;};
+  if (m_stick.GetRawButtonPressed(8)){mAutoBalance.midAuto = !mAutoBalance.midAuto;};
+  if (m_stick.GetRawButtonPressed(9)){mAutoBalance.autoTaxi = !mAutoBalance.autoTaxi;};
+  if (m_stick.GetRawButtonPressed(10)){mAutoBalance.autoBalancing = !mAutoBalance.autoBalancing;};
+  frc::SmartDashboard::PutBoolean("Low", mAutoBalance.lowAuto);
+  frc::SmartDashboard::PutBoolean("Mid", mAutoBalance.midAuto);
   frc::SmartDashboard::PutBoolean("Taxi", mAutoBalance.autoTaxi);
   frc::SmartDashboard::PutBoolean("Balance", mAutoBalance.autoBalancing);
 	frc::SmartDashboard::PutNumber("Command Position", m_arm.angles[m_arm.armState][1]);
@@ -78,25 +79,27 @@ void Robot::RobotPeriodic() {
 void Robot::AutonomousInit()
 {
   m_arm.armState = 0;
-  if (mAutoBalance.autoScore) {
-        mAutoBalance.state = 5;
-    }else if (mAutoBalance.autoTaxi) {
-        mAutoBalance.state = 4;
-    }else if (mAutoBalance.autoBalancing) {
-        mAutoBalance.state = 0;
-    }else {
-        mAutoBalance.state = 6;
-    }
+  if (mAutoBalance.lowAuto) {
+    mAutoBalance.state = 5;
+  }else if (mAutoBalance.midAuto){
+    gripperSolenoid.Toggle();
+    gripperSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
+    m_arm.setNewArmPos(2);
+    mAutoBalance.state = 6;
+  }else if (mAutoBalance.autoTaxi) {
+    mAutoBalance.state = 4;
+  }else if (mAutoBalance.autoBalancing) {
+    mAutoBalance.state = 0;
+  }else {
+    mAutoBalance.state = -1;
+  }
 }
 
 void Robot::AutonomousPeriodic()
 {
-  double speed = mAutoBalance.autoBalanceRoutine(ahrs);
+  double speed = mAutoBalance.autoBalanceRoutine(ahrs, &m_arm, &gripperSolenoid);
   mAutoBalance.currentSpeed = speed;
   setDrive(speed, speed);
-  m_arm.SetHigherArmAngle(0);
-  m_arm.SetLowerArmAngle(0);
-  m_arm.feedForward = 0.1;
   m_arm.ArmPeriodic();
 }
 
@@ -180,14 +183,11 @@ void Robot::TeleopPeriodic()
 
   if (m_stick.GetRawButtonPressed(4)){
     m_arm.setNewArmPos(0);
-  }
-  if (m_stick.GetRawButtonPressed(6)){
+  }else if (m_stick.GetRawButtonPressed(6)){
     m_arm.setNewArmPos(1);
-  }
-  if (m_stick.GetRawButtonPressed(5)){
+  }else if (m_stick.GetRawButtonPressed(5)){
     m_arm.setNewArmPos(2);
-  }
-  if (m_stick.GetRawButtonPressed(3)){
+  }else if (m_stick.GetRawButtonPressed(3)){
     m_arm.setNewArmPos(3);
   }
 

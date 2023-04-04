@@ -4,10 +4,13 @@
 #pragma once
 #include <frc/BuiltInAccelerometer.h>
 #include <cmath>
+#include <frc/Solenoid.h>
+#include <frc/DoubleSolenoid.h>
 #include "AHRS.h"
+#include "RobotArm.h"
 
 #define GYRO_TICK_N 3
-#define CHARGE_TAXI_TICKS 180
+#define CHARGE_TAXI_TICKS 173
 #define AUTO_SCORE_TICKS 30
 #define AUTO_TAXI_TICKS 118
 #define BRAKE_TICK_NUM 3
@@ -38,16 +41,17 @@ class autoBalance{
         rollingAverage avgTilt;
         autoBalance(); 
         // double tmpAutoBalanceRoutine(AHRS *g);
-        double autoBalanceRoutine(AHRS *g);
+        double autoBalanceRoutine(AHRS *g, RobotArm *m_arm, frc::DoubleSolenoid *gripperSolenoid);
         // int secondsToTicks(double time);
         int getState();
         double climbMode(int direction, double delta);
         bool angleDeltaCheck(int direction, double delta);
         bool autoBalancing = true;
         bool autoTaxi = true;
-        bool autoScore = true;
+        bool lowAuto = false;
+        bool midAuto = true;
+        bool midScored = false;
         int taxiTicks = 0;
-        int brakeTicks = 0;
         double currentSpeed = 0;
         int state;
         double* ahrsRollReadouts = new double[2];

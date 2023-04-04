@@ -137,7 +137,7 @@ void RobotArm::LoadParameters() {
     return m_lowerArmMotorController.GetSensorCollection().GetQuadraturePosition() / kCountsPerDegree;
   }
 
-   double RobotArm::GetHigherArmAngle() {
+	double RobotArm::GetHigherArmAngle() {
     return m_higherArmMotorController.GetSensorCollection().GetQuadraturePosition() / kCountsPerDegree;
   }
 
@@ -154,4 +154,11 @@ void RobotArm::LoadParameters() {
 
   bool RobotArm::inRange(double low, double high, double x){
 	return (low<=x && x<=high);
+  }
+
+  bool RobotArm::armAngleCheck(int deviation){
+	if (inRange(angles[armState][0]-deviation, angles[armState][0]+deviation, GetLowerArmAngle())&&inRange(angles[armState][1]-deviation+15, angles[armState][1]+deviation+15, GetHigherArmAngle())){
+		return true;
+	}
+	return false;
   }

@@ -67,7 +67,7 @@ int autoBalance::getState(){
 
 //routine for automatically driving onto and engaging the charge station.
 //returns a value from -1.0 to 1.0, which left and right motors should be set to.
-double autoBalance::autoBalanceRoutine(AHRS *g){
+double autoBalance::autoBalanceRoutine(AHRS *g, RobotArm *m_arm, frc::DoubleSolenoid *gripperSolenoid){
     double roll = g->GetRoll();
 
     switch (state){
@@ -111,7 +111,7 @@ double autoBalance::autoBalanceRoutine(AHRS *g){
             }else if (autoBalancing){
                 state = 0;
             }else {
-                state = 6;
+                state = -1;
             }break;
         case 5:
             if (taxiTicks < AUTO_SCORE_TICKS) {
@@ -123,9 +123,27 @@ double autoBalance::autoBalanceRoutine(AHRS *g){
             }else if (autoBalancing){
                 state = 0;
             }else{
-                state = 6;
+                state = -1;
             }break;
-        case 6: return 0.0;
+        case 6:
+        if (midScored){
+            taxiTicks++;
+            if (taxiTicks<7){
+                m_arm->setNewArmPos(0);
+                if (autoTaxi){
+                    taxiTicks = 0;
+                    state = 4;
+                }else if (autoBalancing){
+                    state = 0;
+                }
+            }
+            return -0.6;
+        }else if (m_arm->armAngleCheck(3)){
+            gripperSolenoid->Toggle();
+            gripperSolenoid->Set(frc::DoubleSolenoid::Value::kReverse);
+            midScored = true;
+        }return 0.0;
+        case -1: return 0.0;
         default: return 0;
     }
     return 0;
