@@ -4,9 +4,16 @@
 #pragma once
 #include <frc/BuiltInAccelerometer.h>
 #include <cmath>
-#include <frc/AnalogGyro.h>
+#include <frc/Solenoid.h>
+#include <frc/DoubleSolenoid.h>
+#include "AHRS.h"
+#include "RobotArm.h"
 
-#define GYRO_TICK_N 2
+#define GYRO_TICK_N 3
+#define CHARGE_TAXI_TICKS 173
+#define AUTO_SCORE_TICKS 30
+#define AUTO_TAXI_TICKS 118
+#define BRAKE_TICK_NUM 3
 #define arraySize(a) (sizeof(a)/sizeof(a[0]))
 #define DEFAULT_SLOW_SPEED 0.4;
 class rollingAverage
@@ -32,31 +39,43 @@ public:
 class autoBalance{
     public:
         rollingAverage avgTilt;
-        autoBalance();
-        double autoBalanceRoutine(frc::AnalogGyro *g);
-        double scoreAndBalance();
-        int secondsToTicks(double time);
+        autoBalance(); 
+        // double tmpAutoBalanceRoutine(AHRS *g);
+        double autoBalanceRoutine(AHRS *g, RobotArm *m_arm, frc::DoubleSolenoid *gripperSolenoid);
+        // int secondsToTicks(double time);
         int getState();
-        
+        double climbMode(int direction, double delta);
+        bool angleDeltaCheck(int direction, double delta);
+        bool autoBalancing = true;
+        bool autoTaxi = true;
+        bool lowAuto = false;
+        bool midAuto = true;
+        bool midScored = false;
+        int taxiTicks = 0;
+        double currentSpeed = 0;
+        int state;
+        double* ahrsRollReadouts = new double[2];
+
+        double getAngleDelta(AHRS *g, double roll);
+        void trackAngleDelta(double delta);
+
     private:
 
-        double climbMode(int direction, double tilt, frc::AnalogGyro *g);
-
         // Gyro functions
-        double getAngleDelta(frc::AnalogGyro *g);
-        void trackAngleDelta(double delta);
-        int getTicksSinceLastEval();
-        void evaluatedData();
-        bool trackedTicksNegative();
-        bool trackedTicksGreaterThan(double magnitude);
-        double avgTrackedTicks();
+        // void tmpTrackAngleDelta(double delta);
+        // int getTicksSinceLastEval();
+        // void evaluatedData();
+        // bool trackedTicksNegative();
+        // bool trackedTicksGreaterThan(double magnitude);
+        // double avgTrackedTicks();
 
         // Tracked gyro values
-        int gyroTicks = 0;
-        float previousTickDeltas[GYRO_TICK_N] = { 0.f };
+        // int gyroTicks = 0;
+        // float previousTickDeltas[GYRO_TICK_N] = { 0.f };
+        // double tmpPreviousTickDeltas[GYRO_TICK_N + 1] = {}; //use proper queue
+        // int tmpPreviousTickDeltas_start = 0, tmpPreviousTickDeltas_end = 1, tmpPreviousTickDeltas_counter = 0;
 
         frc::BuiltInAccelerometer mAccel{};
-        int state;
         int debounceCount;
         double robotSpeedSlow;
         double robotSpeedFast;
