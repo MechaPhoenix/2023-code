@@ -84,6 +84,7 @@ void Robot::AutonomousInit()
   }else if (mAutoBalance.midAuto){
     gripperSolenoid.Toggle();
     gripperSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
+    m_arm.lowerConstraints = m_arm.autoLowerConstraints;
     m_arm.setNewArmPos(2);
     mAutoBalance.state = 6;
   }else if (mAutoBalance.autoTaxi) {
@@ -108,8 +109,10 @@ void Robot::TeleopPeriodic()
   pov = m_stick.GetPOV();
   if(pov == 180){
     boost = BOOST_POWER;
+    m_arm.setNewArmPos(0);
   }else if (pov == 0){
     boost = -BOOST_POWER;
+    m_arm.setNewArmPos(0);
   }else{
     boost = 0;
   }

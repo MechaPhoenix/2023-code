@@ -33,8 +33,12 @@ class RobotArm {
   units::degrees_per_second_squared_t(90)};//acceleration
   frc::TrapezoidProfile<units::degrees>::State currentState{units::degree_t(0), units::degrees_per_second_t(0)};
 
-  frc::TrapezoidProfile<units::degrees>::Constraints lowerConstraints{units::degrees_per_second_t(60),//
+  frc::TrapezoidProfile<units::degrees>::Constraints autoLowerConstraints{units::degrees_per_second_t(60),//
   units::degrees_per_second_squared_t(60)};
+  frc::TrapezoidProfile<units::degrees>::Constraints teleLowerConstraints{units::degrees_per_second_t(80),//
+  units::degrees_per_second_squared_t(85)};
+
+  frc::TrapezoidProfile<units::degrees>::Constraints lowerConstraints = teleLowerConstraints;
   frc::TrapezoidProfile<units::degrees>::State currentLowerState{units::degree_t(0), units::degrees_per_second_t(0)};
   
   double angles[5][2] = {{HOME_ANGLE_LOWER, HOME_ANGLE_HIGHER},
