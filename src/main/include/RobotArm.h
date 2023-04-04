@@ -9,10 +9,6 @@
 
 #include <ctre/phoenix/motorcontrol/can/VictorSPX.h>
 #include <ctre/phoenix/motorcontrol/can/TalonSRX.h>
-#include <frc/trajectory/TrapezoidProfile.h>
-#include <units/angular_acceleration.h>
-#include <units/angular_velocity.h>
-#include <iostream>
 
 class RobotArm {
  public:
@@ -23,25 +19,15 @@ class RobotArm {
   double GetHigherArmAngle();
   void SetLowerArmAngle(double angle);
   void SetHigherArmAngle(double angle);
-  double FeedForwardCalc();
+  void ZeroArm();
+  void ResetArms();
+  void armPositioning();
   bool inRange(double low, double high, double x);
-  void setNewArmPos(int stateUpdate);
-  bool armAngleCheck(int deviation);
   int armState;
-  double feedForward;
-  frc::TrapezoidProfile<units::degrees>::Constraints constraints{units::degrees_per_second_t(105),//
-  units::degrees_per_second_squared_t(90)};//acceleration
-  frc::TrapezoidProfile<units::degrees>::State currentState{units::degree_t(0), units::degrees_per_second_t(0)};
-
-  frc::TrapezoidProfile<units::degrees>::Constraints lowerConstraints{units::degrees_per_second_t(60),//
-  units::degrees_per_second_squared_t(60)};
-  frc::TrapezoidProfile<units::degrees>::State currentLowerState{units::degree_t(0), units::degrees_per_second_t(0)};
-  
-  double angles[5][2] = {{HOME_ANGLE_LOWER, HOME_ANGLE_HIGHER},
-  {HUMAN_PLAYER_LOWER, HUMAN_PLAYER_HIGHER},
-  {MID_SCORE_LOWER, MID_SCORE_HIGHER},
-  {LOW_SCORE_LOWER, LOW_SCORE_HIGHER},
-  {UPPER_HUMAN_LOWER, UPPER_HUMAN_HIGHER}};
+  double angles[4][2] = {{HOME_ANGLE_LOWER, HOME_ANGLE_HIGHER},
+	{PICKUP_ANGLE_LOWER, PICKUP_ANGLE_HIGHER},
+	{MID_SCORE_LOWER, MID_SCORE_HIGHER},
+	{HUMAN_PLAYER_LOWER, HUMAN_PLAYER_HIGHER}};
 
   private:
     ctre::phoenix::motorcontrol::can::TalonSRX m_lowerArmMotorController{ARM_CAN_LOW_NUM};

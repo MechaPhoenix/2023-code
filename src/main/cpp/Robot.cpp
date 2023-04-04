@@ -4,11 +4,11 @@
 
 using namespace std;
 #include "Robot.h"
-#include "cameraserver/CameraServer.h"
 
 void Robot::setDrive(double left, double right)
 {
-  m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -left);
+  std::cout << left*1.11 << ", " << right << std::endl;
+  m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -left*1.11);
   m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -right);
 }
 
@@ -19,18 +19,6 @@ void Robot::RobotInit()
   // gearbox is constructed, you might have to invert the left side instead.
   // m_rightMotor.SetInverted(true);
   // m_rightMotor2.SetInverted(true);
-  
-  // Creates UsbCamera and MjpegServer [1] and connects them
-  cs::UsbCamera armCam = frc::CameraServer::StartAutomaticCapture("arm", 0);
-  cs::UsbCamera chassisCam = frc::CameraServer::StartAutomaticCapture("chassis", 1);
-
-  // Creates the CvSink and connects it to the UsbCamera
-  cs::CvSink cvSinkArm = frc::CameraServer::GetVideo("arm");
-  cs::CvSink cvSinkChassis = frc::CameraServer::GetVideo("chassis");
-
-  // Creates the CvSource and MjpegServer [2] and connects them
-  cs::CvSource outputStreamArm = frc::CameraServer::PutVideo("Arm", 1280, 720);
-  cs::CvSource outputStreamChassis = frc::CameraServer::PutVideo("Chassis", 1280, 720);
 
   // Set some follow stuff
   m_rightMotor2.Follow(m_rightMotor);
@@ -43,82 +31,43 @@ void Robot::RobotInit()
 
   pcmCompressor.EnableDigital();
 
-  ahrs = new AHRS(frc::SPI::Port::kMXP);
-  ahrs->Calibrate();
-
-  // Prints
-  std::cout << "Compressor Enabled"
-            << "\n";
-  std::cout << "Check if Running"
-            << "\n";
-  std::cout << "RLS On and Flashing"
-            << "\n";
+  g.InitGyro();
+  g.Calibrate();
+  g.SetDeadband(0.05);
+  // Disable Compressor
+  // Optional
+  // pcmCompressor.Disable();
 
   // Solenoid
   gripperSolenoid.Set(frc::DoubleSolenoid::Value::kOff);
-  std::cout << "Solenoid Off"
-            << "\n";
 }
 
 void Robot::RobotPeriodic() {
-  frc::SmartDashboard::PutNumber("State", mAutoBalance.getState());
-  frc::SmartDashboard::PutNumber("Lower EV", m_arm.GetLowerArmAngle());
-  frc::SmartDashboard::PutNumber("Higher EV", m_arm.GetHigherArmAngle());
-  frc::SmartDashboard::PutNumber("Pitch", ahrs->GetPitch());
-  if (m_stick.GetRawButtonPressed(7)){mAutoBalance.lowAuto = !mAutoBalance.lowAuto;};
-  if (m_stick.GetRawButtonPressed(8)){mAutoBalance.midAuto = !mAutoBalance.midAuto;};
-  if (m_stick.GetRawButtonPressed(9)){mAutoBalance.autoTaxi = !mAutoBalance.autoTaxi;};
-  if (m_stick.GetRawButtonPressed(10)){mAutoBalance.autoBalancing = !mAutoBalance.autoBalancing;};
-  frc::SmartDashboard::PutBoolean("Low", mAutoBalance.lowAuto);
-  frc::SmartDashboard::PutBoolean("Mid", mAutoBalance.midAuto);
-  frc::SmartDashboard::PutBoolean("Taxi", mAutoBalance.autoTaxi);
-  frc::SmartDashboard::PutBoolean("Balance", mAutoBalance.autoBalancing);
-	frc::SmartDashboard::PutNumber("Command Position", m_arm.angles[m_arm.armState][1]);
+  frc::SmartDashboard::PutNumber("Auto State", mAutoBalance.getState());
+  frc::SmartDashboard::PutNumber("Lower Encoder Value", m_arm.GetLowerArmAngle());
+  frc::SmartDashboard::PutNumber("Higher Encoder Value", m_arm.GetHigherArmAngle());
+  frc::SmartDashboard::PutNumber("Gyro Delta", round(-g.GetRate()*100)/100);
+  frc::SmartDashboard::PutNumber("Gyro Angle", -g.GetAngle());
 }
 
 void Robot::AutonomousInit()
 {
-  m_arm.armState = 0;
-  if (mAutoBalance.lowAuto) {
-    mAutoBalance.state = 5;
-  }else if (mAutoBalance.midAuto){
-    gripperSolenoid.Toggle();
-    gripperSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
-    m_arm.setNewArmPos(2);
-    mAutoBalance.state = 6;
-  }else if (mAutoBalance.autoTaxi) {
-    mAutoBalance.state = 4;
-  }else if (mAutoBalance.autoBalancing) {
-    mAutoBalance.state = 0;
-  }else {
-    mAutoBalance.state = -1;
-  }
 }
 
 void Robot::AutonomousPeriodic()
 {
-  double speed = mAutoBalance.autoBalanceRoutine(ahrs, &m_arm, &gripperSolenoid);
-  mAutoBalance.currentSpeed = speed;
+  double speed = mAutoBalance.autoBalanceRoutine(&g);
   setDrive(speed, speed);
-  m_arm.ArmPeriodic();
+  frc::SmartDashboard::PutNumber("Speed", speed);
 }
 
 void Robot::TeleopPeriodic()
 {
-  pov = m_stick.GetPOV();
-  if(pov == 180){
-    boost = BOOST_POWER;
-  }else if (pov == 0){
-    boost = -BOOST_POWER;
-  }else{
-    boost = 0;
-  }
-
   // Drive with arcade style
   // This is where all our fun stuff goes :)
   // Read the joystick, calculate the drive stuff
   double x = m_stick.GetX()*JOYSTICK_ROT_SENS; // In terms of arcade drive, this is speed
-  double y = m_stick.GetY()*DEFENCE_JOYSTICK_SENSITIVITY; // In terms of arcade drive, this is turn
+  double y = m_stick.GetY()*JOYSTICK_SENSITIVITY; // In terms of arcade drive, this is turn
 
   // Drive
   double leftPower = (y - x) / 2;
@@ -128,7 +77,7 @@ void Robot::TeleopPeriodic()
   if (leftPower != lastDriveLeft)
   {
     // Update the LEFT drive
-    m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, leftPower * S_LEFT_DRIVE + boost);
+    m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, leftPower * S_LEFT_DRIVE);
     lastDriveLeft = leftPower;
   }
 
@@ -136,60 +85,40 @@ void Robot::TeleopPeriodic()
   if (rightPower != lastDriveRight)
   {
     // Update the RIGHT drive
-    m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, rightPower * S_RIGHT_DRIVE + boost);
+    m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, rightPower * S_RIGHT_DRIVE);
     lastDriveRight = rightPower;
   }
 
   // Update the Trigger and stuff
-  bool engageButton = m_stick.GetRawButton(FEED_BUTTON);
-  bool releaseButton = m_stick.GetRawButton(2);
-
-  if (engageButton) {
-    if (!lastEngage) {
+  bool thumbButton = m_stick.GetRawButton(FEED_BUTTON);
+  // Arm Trigger
+  if (thumbButton != lastTrigger)
+  {
+    lastTrigger = thumbButton;
+    // Checks if trigger is pressed
+    if (thumbButton)
+    {
       gripperSolenoid.Toggle();
       gripperSolenoid.Set(frc::DoubleSolenoid::Value::kForward);
+      // Prints Out
+      // Disables Solenoid and sets trigger to false
     }
-    lastEngage = true;
-    lastRelease = false;
-  } else if (releaseButton) {
-    if (!lastRelease) {
+    else
+    {
+      // Sends Back
       gripperSolenoid.Toggle();
       gripperSolenoid.Set(frc::DoubleSolenoid::Value::kReverse);
     }
-    lastRelease = true;
-    lastEngage = false;
   }
 
-  // // Arm Trigger
-  // if (thumbButton != lastTrigger)
-  // {
-  //   lastTrigger = thumbButton;
-  //   // Checks if trigger is pressed
-  //   if (thumbButton)
-  //   {
-      
-  //     // Prints Out
-  //     std::cout << "Solenoid Out!" << "\n";
-  //     // Disables Solenoid and sets trigger to false
-  //   }
-  //   else
-  //   {
-  //     // Sends Back
-  //     gripperSolenoid.Toggle();
-  //     gripperSolenoid.Set(frc::DoubleSolenoid::Value::kReverse);
-  //     std::cout << "Solenoid Back" << "\n";
-  //   }
-  //}
-
-  if (m_stick.GetRawButtonPressed(4)){
-    m_arm.setNewArmPos(0);
-  }else if (m_stick.GetRawButtonPressed(6)){
-    m_arm.setNewArmPos(1);
-  }else if (m_stick.GetRawButtonPressed(5)){
-    m_arm.setNewArmPos(2);
-  }else if (m_stick.GetRawButtonPressed(3)){
-    m_arm.setNewArmPos(3);
+  if (m_stick.GetRawButtonPressed(7)){
+    m_arm.LoadParameters();
   }
+
+  if (m_stick.GetRawButtonPressed(3)){m_arm.armState = 0;};
+  if (m_stick.GetRawButtonPressed(4)){m_arm.armState = 1;};
+  if (m_stick.GetRawButtonPressed(5)){m_arm.armState = 2;};
+  if (m_stick.GetRawButtonPressed(6)){m_arm.armState = 3;};
 
   m_arm.ArmPeriodic();
 }

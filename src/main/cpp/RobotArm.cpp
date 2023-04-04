@@ -8,23 +8,21 @@
 
 constexpr int kPIDLoopIdx = 0;
 constexpr int kTimeoutMs = 30;
-constexpr double kCountsPerDegree = 4096.0 / 360;
+constexpr int kCountsPerDegree = 4096 / 360;
  RobotArm::RobotArm()
   {
     //for the love of god dont set Lower PID/P over 2
-    frc::SmartDashboard::PutNumber("Lower PID/P", 0.7);
-    frc::SmartDashboard::PutNumber("Lower PID/I", 0.000);
+    frc::SmartDashboard::PutNumber("Lower PID/P", 1);
+    frc::SmartDashboard::PutNumber("Lower PID/I", 0);
     frc::SmartDashboard::PutNumber("Lower PID/D", 0);
-    frc::SmartDashboard::PutNumber("Higher PID/P", 1.2/*was 1.5 and working*/); // speed of upper arm
-    frc::SmartDashboard::PutNumber("Higher PID/I", 0.000);
-    frc::SmartDashboard::PutNumber("Higher PID/D", 0.0);
+    frc::SmartDashboard::PutNumber("Higher PID/P", 1);
+    frc::SmartDashboard::PutNumber("Higher PID/I", 0);
+    frc::SmartDashboard::PutNumber("Higher PID/D", 0);
 
 	armState = 0;
 
 	LoadParameters();
-
-	m_lowerArmMotorController.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
-	m_higherArmMotorController.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+    ZeroArm();
   }
 
 void RobotArm::LoadParameters() {
@@ -48,8 +46,14 @@ void RobotArm::LoadParameters() {
 		/* set the peak and nominal outputs, 12V means full */
 		m_lowerArmMotorController.ConfigNominalOutputForward(0, kTimeoutMs);
 		m_lowerArmMotorController.ConfigNominalOutputReverse(0, kTimeoutMs);
-		m_lowerArmMotorController.ConfigPeakOutputForward(PEAK_ARM_MOTOR_OUTPUT, kTimeoutMs);
-		m_lowerArmMotorController.ConfigPeakOutputReverse(-PEAK_ARM_MOTOR_OUTPUT, kTimeoutMs);
+		m_lowerArmMotorController.ConfigPeakOutputForward(1, kTimeoutMs);
+		m_lowerArmMotorController.ConfigPeakOutputReverse(-1, kTimeoutMs);
+
+		/* set closed loop gains in slot0 */
+		//m_lowerArmMotorController.Config_kF(kPIDLoopIdx, 0.0, kTimeoutMs);
+		m_lowerArmMotorController.Config_kP(kPIDLoopIdx, frc::SmartDashboard::GetNumber("Lower PID/P", 0.0), kTimeoutMs);
+		m_lowerArmMotorController.Config_kI(kPIDLoopIdx, frc::SmartDashboard::GetNumber("Lower PID/I", 0.0), kTimeoutMs);
+		m_lowerArmMotorController.Config_kD(kPIDLoopIdx, frc::SmartDashboard::GetNumber("Lower PID/D", 0.0), kTimeoutMs);
 
         m_higherArmMotorController.ConfigFactoryDefault();
 
@@ -73,92 +77,58 @@ void RobotArm::LoadParameters() {
 		/* set the peak and nominal outputs, 12V means full */
 		m_higherArmMotorController.ConfigNominalOutputForward(0, kTimeoutMs);
 		m_higherArmMotorController.ConfigNominalOutputReverse(0, kTimeoutMs);
-		m_higherArmMotorController.ConfigPeakOutputForward(PEAK_ARM_MOTOR_OUTPUT, kTimeoutMs);
-		m_higherArmMotorController.ConfigPeakOutputReverse(-PEAK_ARM_MOTOR_OUTPUT, kTimeoutMs);
+		m_higherArmMotorController.ConfigPeakOutputForward(1, kTimeoutMs);
+		m_higherArmMotorController.ConfigPeakOutputReverse(-1, kTimeoutMs);
 
 		/* set closed loop gains in slot0 */
-		m_lowerArmMotorController.Config_kP(kPIDLoopIdx, frc::SmartDashboard::GetNumber("Lower PID/P", 0.0), kTimeoutMs);
-		m_lowerArmMotorController.Config_kI(kPIDLoopIdx, frc::SmartDashboard::GetNumber("Lower PID/I", 0.0), kTimeoutMs);
-		m_lowerArmMotorController.Config_kD(kPIDLoopIdx, frc::SmartDashboard::GetNumber("Lower PID/D", 0.0), kTimeoutMs);
-
+		//m_lowerArmMotorController.Config_kF(kPIDLoopIdx, 0.0, kTimeoutMs);
 		m_higherArmMotorController.Config_kP(kPIDLoopIdx, frc::SmartDashboard::GetNumber("Higher PID/P", 0.0), kTimeoutMs);
 		m_higherArmMotorController.Config_kI(kPIDLoopIdx, frc::SmartDashboard::GetNumber("Higher PID/I", 0.0), kTimeoutMs);
 		m_higherArmMotorController.Config_kD(kPIDLoopIdx, frc::SmartDashboard::GetNumber("Higher PID/D", 0.0), kTimeoutMs);
+    }
 
-	}
+    void RobotArm::ZeroArm() {
+        m_lowerArmMotorController.SetSelectedSensorPosition(0, kPIDLoopIdx, kTimeoutMs);
+        m_higherArmMotorController.SetSelectedSensorPosition(0, kPIDLoopIdx, kTimeoutMs);
+    }
+  
 
   void RobotArm::ArmPeriodic() {
-	frc::TrapezoidProfile<units::degree> highArmProfile{
-		constraints,
-		frc::TrapezoidProfile<units::degree>::State{
-			units::degree_t(angles[armState][1]),
-			units::degrees_per_second_t(0)
-		},
-		currentState
-	};
-
-	currentState = highArmProfile.Calculate(20_ms);
-
-	SetHigherArmAngle(currentState.position.value());
-
-	frc::TrapezoidProfile<units::degree> lowArmProfile{
-		lowerConstraints,
-		frc::TrapezoidProfile<units::degree>::State{
-			units::degree_t(angles[armState][0]),
-			units::degrees_per_second_t(0)
-		},
-		currentLowerState
-	};
-
-	currentLowerState = lowArmProfile.Calculate(20_ms);
-
-	SetLowerArmAngle(currentLowerState.position.value());
+    armPositioning();
   }
   
-  void RobotArm::setNewArmPos(int stateUpdate){
-	armState = stateUpdate;
-	feedForward = FeedForwardCalc();
-    currentState = frc::TrapezoidProfile<units::degree>::State {
-      units::degree_t(GetHigherArmAngle()),
-      units::degrees_per_second_t(0)
-    };
-
-	currentLowerState = frc::TrapezoidProfile<units::degree>::State {
-      units::degree_t(GetLowerArmAngle()),
-      units::degrees_per_second_t(0)
-    };
+  void RobotArm::armPositioning(){
+	if (!(inRange(angles[armState][1]-2, angles[armState][1]+2 ,GetHigherArmAngle()))){
+		SetHigherArmAngle(angles[armState][1]);
+	}else if (!(inRange(angles[armState][1]-2, angles[armState][1]+2 ,GetHigherArmAngle()))){
+		SetLowerArmAngle(angles[armState][0]);
+	}
   }
 
-  double RobotArm::FeedForwardCalc(){
-	return FEED_FORWARD_CONSTANT*std::cos(((angles[armState][1])-HIGH_ARM_LEVEL_OFFSET)*(M_PI/180));
+  bool RobotArm::inRange(double low, double high, double x){
+	return (low<x&&x<high);
   }
 
   double RobotArm::GetLowerArmAngle() {
     return m_lowerArmMotorController.GetSensorCollection().GetQuadraturePosition() / kCountsPerDegree;
   }
 
-	double RobotArm::GetHigherArmAngle() {
+   double RobotArm::GetHigherArmAngle() {
     return m_higherArmMotorController.GetSensorCollection().GetQuadraturePosition() / kCountsPerDegree;
   }
 
   void RobotArm::SetLowerArmAngle(double angle){
-    angle = (std::max(0.0, std::min(LOW_ARM_FULL_DEPLOY, angle)))*kCountsPerDegree;
-	m_lowerArmMotorController.Set(ControlMode::Position, angle);
+    angle = std::max(0.0, std::min(double(121), angle * kCountsPerDegree));
+    m_lowerArmMotorController.Set(ControlMode::Position, angle);
   }
 
   void RobotArm::SetHigherArmAngle(double angle){
-    angle = (std::max(-180.0, std::min(0.0, angle)))*kCountsPerDegree;
-	std::cout<<"angle: "<<angle<<std::endl;
-    m_higherArmMotorController.Set(ControlMode::Position, angle, DemandType_ArbitraryFeedForward, feedForward);
+    angle = std::max(-120.0, std::min(double(0), angle * kCountsPerDegree));
+    m_higherArmMotorController.Set(ControlMode::Position, angle);
   }
 
-  bool RobotArm::inRange(double low, double high, double x){
-	return (low<=x && x<=high);
-  }
-
-  bool RobotArm::armAngleCheck(int deviation){
-	if (inRange(angles[armState][0]-deviation, angles[armState][0]+deviation, GetLowerArmAngle())&&inRange(angles[armState][1]-deviation+15, angles[armState][1]+deviation+15, GetHigherArmAngle())){
-		return true;
-	}
-	return false;
+  void RobotArm::ResetArms(){
+    m_lowerArmMotorController.Config_kP(kPIDLoopIdx, 0.5, kTimeoutMs);
+    m_lowerArmMotorController.Set(ControlMode::Position, 0);
+    m_lowerArmMotorController.Config_kP(kPIDLoopIdx, frc::SmartDashboard::GetNumber("Lower PID/P", 0.0), kTimeoutMs);
   }

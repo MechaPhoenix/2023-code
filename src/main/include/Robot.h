@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <frc/Joystick.h>
 #include <frc/AnalogGyro.h>
@@ -16,8 +17,6 @@
 #include "autoBalance.h"
 #include "armAngles.h"
 
-#include "AHRS.h"
-
 class Robot : public frc::TimedRobot
 {
 
@@ -30,7 +29,7 @@ class Robot : public frc::TimedRobot
     void TeleopPeriodic() override;
 
   // JoyStick
-  frc::Joystick m_stick{0};
+  frc::Joystick m_stick{1};
   // Motor Doubles
   double lastDriveRight{0};
   double lastDriveLeft{0};
@@ -39,16 +38,10 @@ class Robot : public frc::TimedRobot
   // Solenoid
   frc::DoubleSolenoid gripperSolenoid{frc::PneumaticsModuleType::CTREPCM, 0, 1};
   // Sol Bools
-  bool lastEngage = false;
-  bool lastRelease = false;
+  bool lastTrigger = false;
   // Gyroscope
   frc::AnalogGyro g{0};
-  AHRS *ahrs; 
-  //AHRS gyro = new AHRS(SerialPort.Port.kMXP);
 
-  double currentJoySens = DEFENCE_JOYSTICK_SENSITIVITY;
-  double boost = 0;
-  int pov;
 
   // Drive Motors
   ctre::phoenix::motorcontrol::can::VictorSPX m_leftMotor{15};
