@@ -126,22 +126,22 @@ double autoBalance::autoBalanceRoutine(AHRS *g, RobotArm *m_arm, frc::DoubleSole
                 state = -1;
             }break;
         case 6:
-        if (midScored){
-            taxiTicks++;
-            if (taxiTicks<7){
-                m_arm->setNewArmPos(0);
-                if (autoTaxi){
-                    taxiTicks = 0;
-                    state = 4;
-                }else if (autoBalancing){
-                    state = 0;
-                }
-            }
-            return -0.6;
-        }else if (m_arm->armAngleCheck(3)){
+        if (m_arm->armAngleCheck(3)){
             gripperSolenoid->Toggle();
             gripperSolenoid->Set(frc::DoubleSolenoid::Value::kReverse);
-            midScored = true;
+            // gripperSolenoid->Toggle();
+            // gripperSolenoid->Set(frc::DoubleSolenoid::Value::kForward);
+            // gripperSolenoid->Toggle();
+            gripperSolenoid->Set(frc::DoubleSolenoid::Value::kForward);
+            m_arm->lowerConstraints=m_arm->teleLowerConstraints;
+            m_arm->setNewArmPos(0);
+            if (autoTaxi){
+                taxiTicks = 0;
+                state = 4;
+            }else if (autoBalancing){
+                state = 0;
+            }
+            return -0.6;
         }return 0.0;
         case -1: return 0.0;
         default: return 0;
