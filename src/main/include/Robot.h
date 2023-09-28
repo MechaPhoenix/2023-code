@@ -8,6 +8,7 @@
 #include <frc/Solenoid.h>
 #include <frc/DoubleSolenoid.h>
 #include <frc/drive/DifferentialDrive.h>
+#include <frc/filter/SlewRateLimiter.h>
 #include <ctre/phoenix/motorcontrol/can/VictorSPX.h>
 #include <ctre/phoenix/motorcontrol/can/TalonSRX.h>
 
@@ -49,6 +50,11 @@ class Robot : public frc::TimedRobot
   double currentJoySens = DEFENCE_JOYSTICK_SENSITIVITY;
   double boost = 0;
   int pov;
+
+  double r_speed = 0.0;
+  double l_speed = 0.0;
+  frc::SlewRateLimiter<units::scalar> left_sl{1.0 / 0.35_s};
+  frc::SlewRateLimiter<units::scalar> right_sl{1.0 / 0.35_s};
 
   // Drive Motors
   ctre::phoenix::motorcontrol::can::VictorSPX m_leftMotor{15};

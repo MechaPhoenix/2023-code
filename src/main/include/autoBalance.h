@@ -10,7 +10,7 @@
 #include "RobotArm.h"
 
 #define GYRO_TICK_N 3
-#define CHARGE_TAXI_TICKS 173
+#define CHARGE_TAXI_TICKS 180
 #define AUTO_SCORE_TICKS 30
 #define AUTO_TAXI_TICKS 118
 #define BRAKE_TICK_NUM 3
@@ -40,12 +40,10 @@ class autoBalance{
     public:
         rollingAverage avgTilt;
         autoBalance(); 
-        // double tmpAutoBalanceRoutine(AHRS *g);
         double autoBalanceRoutine(AHRS *g, RobotArm *m_arm, frc::DoubleSolenoid *gripperSolenoid);
-        // int secondsToTicks(double time);
         int getState();
-        double climbMode(int direction, double delta);
-        bool angleDeltaCheck(int direction, double delta);
+        //double climbMode(int direction, double delta);
+        //bool angleDeltaCheck(int direction, double delta);
         bool autoBalancing = true;
         bool autoTaxi = true;
         bool lowAuto = false;
@@ -79,6 +77,7 @@ class autoBalance{
         int debounceCount;
         double robotSpeedSlow;
         double robotSpeedFast;
+        double robotCorrectionSpeed;
         double onChargeStationDegree;
         double levelDegree;
         double debounceTime;
