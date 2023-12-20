@@ -20,6 +20,7 @@ constexpr double kCountsPerDegree = 4096.0 / 360;
     frc::SmartDashboard::PutNumber("Higher PID/D", 0.0);
 
 	  std::cout << "PIDs Posted to Shuffle";
+	  std::cout << "Shuffle Opened";
 
 
 	armState = 0;

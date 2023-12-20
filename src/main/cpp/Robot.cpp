@@ -24,11 +24,11 @@ void Robot::RobotInit()
   
   // Creates UsbCamera and MjpegServer [1] and connects them
   cs::UsbCamera armCam = frc::CameraServer::StartAutomaticCapture("arm", 0);
-  cs::UsbCamera chassisCam = frc::CameraServer::StartAutomaticCapture("chassis", 1);
+  //cs::UsbCamera chassisCam = frc::CameraServer::StartAutomaticCapture("chassis", 1);
 
   // Creates the CvSink and connects it to the UsbCamera
   cs::CvSink cvSinkArm = frc::CameraServer::GetVideo("arm");
-  cs::CvSink cvSinkChassis = frc::CameraServer::GetVideo("chassis");
+ // cs::CvSink cvSinkChassis = frc::CameraServer::GetVideo("chassis");
 
   // Creates the CvSource and MjpegServer [2] and connects them
   cs::CvSource outputStreamArm = frc::CameraServer::PutVideo("Arm", 640, 360);
@@ -57,9 +57,7 @@ void Robot::RobotInit()
             << "\n";
 
   // Solenoid
-  gripperSolenoid.Set(frc::DoubleSolenoid::Value::kOff);
-  std::cout << "Solenoid Off"
-            << "\n";
+ gripperSolenoid.Set(frc::DoubleSolenoid::Value::kOff);
 }
 
 void Robot::RobotPeriodic() {
