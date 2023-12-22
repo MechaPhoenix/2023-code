@@ -177,7 +177,7 @@ void Robot::TeleopPeriodic()
   //     // Prints Out
   //     std::cout << "Solenoid Out!" << "\n";
   //     // Disables Solenoid and sets trigger to false
-  //   }
+  //   } 
   //   else
   //   {
   //     // Sends Back
