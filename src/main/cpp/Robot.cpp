@@ -23,15 +23,15 @@ void Robot::RobotInit()
   // m_rightMotor2.SetInverted(true);
   
   // Creates UsbCamera and MjpegServer [1] and connects them
-//   cs::UsbCamera armCam = frc::CameraServer::StartAutomaticCapture("arm", 0);
-//   //cs::UsbCamera chassisCam = frc::CameraServer::StartAutomaticCapture("chassis", 1);
+  cs::UsbCamera armCam = frc::CameraServer::StartAutomaticCapture("arm", 0);
+  //cs::UsbCamera chassisCam = frc::CameraServer::StartAutomaticCapture("chassis", 1);
 
-//   // Creates the CvSink and connects it to the UsbCamera
-//   cs::CvSink cvSinkArm = frc::CameraServer::GetVideo("arm");
-//  // cs::CvSink cvSinkChassis = frc::CameraServer::GetVideo("chassis");
+  // Creates the CvSink and connects it to the UsbCamera
+  cs::CvSink cvSinkArm = frc::CameraServer::GetVideo("arm");
+ // cs::CvSink cvSinkChassis = frc::CameraServer::GetVideo("chassis");
 
-//   // Creates the CvSource and MjpegServer [2] and connects them
-//   cs::CvSource outputStreamArm = frc::CameraServer::PutVideo("Arm", 640, 360);
+  // Creates the CvSource and MjpegServer [2] and connects them
+  cs::CvSource outputStreamArm = frc::CameraServer::PutVideo("Arm", 640, 360);
 //   cs::CvSource outputStreamChassis = frc::CameraServer::PutVideo("Chassis", 640, 360);
 
   // Set some follow stuff
