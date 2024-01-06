@@ -42,8 +42,6 @@ class autoBalance{
         autoBalance(); 
         double autoBalanceRoutine(AHRS *g, RobotArm *m_arm, frc::DoubleSolenoid *gripperSolenoid);
         int getState();
-        //double climbMode(int direction, double delta);
-        //bool angleDeltaCheck(int direction, double delta);
         bool autoBalancing = true;
         bool autoTaxi = true;
         bool lowAuto = false;
