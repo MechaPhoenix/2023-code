@@ -55,6 +55,7 @@ void Robot::RobotInit()
             << "\n";
   std::cout << "RLS On and Flashing"
             << "\n";
+            std::cout << "Bot Online"
 
   // Solenoid
  gripperSolenoid.Set(frc::DoubleSolenoid::Value::kOff);
