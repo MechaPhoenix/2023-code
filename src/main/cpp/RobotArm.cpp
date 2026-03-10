@@ -19,12 +19,16 @@ constexpr double kCountsPerDegree = 4096.0 / 360;
     frc::SmartDashboard::PutNumber("Higher PID/I", 0.000);
     frc::SmartDashboard::PutNumber("Higher PID/D", 0.0);
 
+	  std::cout << "PIDs Posted to Shuffle";
+	  std::cout << "Shuffle Opened";
+
+
 	armState = 0;
 
 	LoadParameters();
 
-	m_lowerArmMotorController.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
-	m_higherArmMotorController.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+	// m_lowerArmMotorController.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
+	// m_higherArmMotorController.SetNeutralMode(ctre::phoenix::motorcontrol::NeutralMode::Brake);
   }
 
 void RobotArm::LoadParameters() {
@@ -113,6 +117,7 @@ void RobotArm::LoadParameters() {
 	currentLowerState = lowArmProfile.Calculate(20_ms);
 
 	SetLowerArmAngle(currentLowerState.position.value());
+
   }
   
   void RobotArm::setNewArmPos(int stateUpdate){

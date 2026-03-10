@@ -13,6 +13,8 @@ void driveEncoders::updateEncoderDelta(){
 
 }
 
+
+
 double driveEncoders::getEncoderDiffRatio(){
 
     if (currentEncoderDelta>0){

@@ -6,6 +6,8 @@ using namespace std;
 #include "Robot.h"
 #include "cameraserver/CameraServer.h"
 
+
+
 void Robot::setDrive(double left, double right)
 {
   m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, -left);
@@ -22,15 +24,15 @@ void Robot::RobotInit()
   
   // Creates UsbCamera and MjpegServer [1] and connects them
   cs::UsbCamera armCam = frc::CameraServer::StartAutomaticCapture("arm", 0);
-  cs::UsbCamera chassisCam = frc::CameraServer::StartAutomaticCapture("chassis", 1);
+  //cs::UsbCamera chassisCam = frc::CameraServer::StartAutomaticCapture("chassis", 1);
 
   // Creates the CvSink and connects it to the UsbCamera
   cs::CvSink cvSinkArm = frc::CameraServer::GetVideo("arm");
-  cs::CvSink cvSinkChassis = frc::CameraServer::GetVideo("chassis");
+ // cs::CvSink cvSinkChassis = frc::CameraServer::GetVideo("chassis");
 
   // Creates the CvSource and MjpegServer [2] and connects them
-  cs::CvSource outputStreamArm = frc::CameraServer::PutVideo("Arm", 1280, 720);
-  cs::CvSource outputStreamChassis = frc::CameraServer::PutVideo("Chassis", 1280, 720);
+  cs::CvSource outputStreamArm = frc::CameraServer::PutVideo("Arm", 640, 360);
+//   cs::CvSource outputStreamChassis = frc::CameraServer::PutVideo("Chassis", 640, 360);
 
   // Set some follow stuff
   m_rightMotor2.Follow(m_rightMotor);
@@ -53,11 +55,10 @@ void Robot::RobotInit()
             << "\n";
   std::cout << "RLS On and Flashing"
             << "\n";
+            std::cout << "Bot Online"
 
   // Solenoid
-  gripperSolenoid.Set(frc::DoubleSolenoid::Value::kOff);
-  std::cout << "Solenoid Off"
-            << "\n";
+ gripperSolenoid.Set(frc::DoubleSolenoid::Value::kOff);
 }
 
 void Robot::RobotPeriodic() {
@@ -109,13 +110,12 @@ void Robot::TeleopPeriodic()
   pov = m_stick.GetPOV();
   if(pov == 180){
     boost = BOOST_POWER;
-    m_arm.setNewArmPos(0);
   }else if (pov == 0){
     boost = -BOOST_POWER;
-    m_arm.setNewArmPos(0);
   }else{
     boost = 0;
   }
+
 
   // Drive with arcade style
   // This is where all our fun stuff goes :)
@@ -131,7 +131,9 @@ void Robot::TeleopPeriodic()
   if (leftPower != lastDriveLeft)
   {
     // Update the LEFT drive
-    m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, leftPower * S_LEFT_DRIVE + boost);
+    //l_speed = leftPower * S_LEFT_DRIVE + boost;
+    l_speed = left_sl.Calculate(leftPower * S_LEFT_DRIVE + boost);
+    m_leftMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, l_speed);
     lastDriveLeft = leftPower;
   }
 
@@ -139,7 +141,9 @@ void Robot::TeleopPeriodic()
   if (rightPower != lastDriveRight)
   {
     // Update the RIGHT drive
-    m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, rightPower * S_RIGHT_DRIVE + boost);
+    //r_speed = rightPower * S_RIGHT_DRIVE + boost;
+    r_speed = right_sl.Calculate(rightPower * S_RIGHT_DRIVE + boost);
+    m_rightMotor.Set(ctre::phoenix::motorcontrol::VictorSPXControlMode::PercentOutput, r_speed);
     lastDriveRight = rightPower;
   }
 
@@ -174,7 +178,7 @@ void Robot::TeleopPeriodic()
   //     // Prints Out
   //     std::cout << "Solenoid Out!" << "\n";
   //     // Disables Solenoid and sets trigger to false
-  //   }
+  //   } 
   //   else
   //   {
   //     // Sends Back

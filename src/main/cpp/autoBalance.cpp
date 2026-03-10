@@ -15,18 +15,19 @@ autoBalance::autoBalance(){
     autoDirection = 1;
 
     //Speed the robot drived while scoring/approaching station, default = 0.4
-    robotSpeedFast = autoDirection*0.515;
+    robotSpeedFast = autoDirection*0.54;
     
     //Speed the robot drives while balancing itself on the charge station.
     //Should be roughly half the fast speed, to make the robot more accurate, default = 0.2
-    robotSpeedSlow = autoDirection*0.27;
+    robotSpeedSlow = autoDirection*0.30;
+    robotCorrectionSpeed = autoDirection*0.24;
 
     //Angle where the robot knows it is on the charge station, default = 13.0
-    onChargeStationDegree = autoDirection*11.5;
+    onChargeStationDegree = autoDirection*12.3;
 
     //Angle where the robot can assume it is level on the charging station
     //Used for exiting the drive forward sequence as well as for auto balancing, default = 6.0
-    levelDegree = autoDirection*2.2;
+    levelDegree = autoDirection*2.15;
 
     //Amount of time a sensor condition needs to be met before changing states in seconds
     //Reduces the impact of sensor noice, but too high can make the auto run slower, default = 0.2
@@ -85,6 +86,9 @@ double autoBalance::autoBalanceRoutine(AHRS *g, RobotArm *m_arm, frc::DoubleSole
             return robotSpeedSlow;
         //on charge station, stop motors and wait for end of auto
         case 2:
+            if (robotSpeedSlow!=robotCorrectionSpeed){
+                robotSpeedSlow = robotCorrectionSpeed;
+            }
             if(roll < -levelDegree){
                 state = 3;
             }else if(roll > levelDegree){
@@ -126,23 +130,25 @@ double autoBalance::autoBalanceRoutine(AHRS *g, RobotArm *m_arm, frc::DoubleSole
                 state = -1;
             }break;
         case 6:
-        if (m_arm->armAngleCheck(3)){
+        if (midScored){
+            taxiTicks++;
+            if (taxiTicks>5){
+                m_arm->lowerConstraints=m_arm->teleLowerConstraints;
+                m_arm->setNewArmPos(0);
+                if (autoTaxi){
+                    taxiTicks = 0;
+                    state = 4;
+                }else if (autoBalancing){
+                    state = 0;
+                }
+                return -0.6;
+            }
+        }else if (m_arm->armAngleCheck(8)){
             gripperSolenoid->Toggle();
             gripperSolenoid->Set(frc::DoubleSolenoid::Value::kReverse);
-            // gripperSolenoid->Toggle();
-            // gripperSolenoid->Set(frc::DoubleSolenoid::Value::kForward);
-            // gripperSolenoid->Toggle();
-            gripperSolenoid->Set(frc::DoubleSolenoid::Value::kForward);
-            m_arm->lowerConstraints=m_arm->teleLowerConstraints;
-            m_arm->setNewArmPos(0);
-            if (autoTaxi){
-                taxiTicks = 0;
-                state = 4;
-            }else if (autoBalancing){
-                state = 0;
-            }
-            return -0.6;
-        }return 0.0;
+            midScored = true;
+        }
+        return 0.0;
         case -1: return 0.0;
         default: return 0;
     }
@@ -155,7 +161,7 @@ double autoBalance::autoBalanceRoutine(AHRS *g, RobotArm *m_arm, frc::DoubleSole
 //     if(angleDeltaCheck(direction, delta)){
 //         state = 2;
 //         brakeTicks = 0;
-//     }
+//     }    
 //         //evaluatedData();
 //     //}
 //     return direction*robotSpeedSlow;
